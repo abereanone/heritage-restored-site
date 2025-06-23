@@ -1,0 +1,18 @@
+backend:
+  name: github
+  repo: abereanone/heritage-restored-site
+  branch: main
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "homepage"
+    label: "Homepage Content"
+    files:
+      - file: "src/pages/index.astro"
+        label: "Home Page"
+        name: "home"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Intro Paragraph", name: "intro", widget: "text" }
