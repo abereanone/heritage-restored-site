@@ -33,4 +33,5 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           local-dir: dist/
           server-dir: ${{ secrets.FTP_TARGET }}/
-          protocol: ftp
+          protocol: ftps
+          security: explicit
