@@ -34,4 +34,4 @@ jobs:
           local-dir: dist/
           server-dir: ${{ secrets.FTP_TARGET }}/
           protocol: ftps
-          security: explicit
+          security: loose
