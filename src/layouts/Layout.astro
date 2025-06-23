@@ -1,0 +1,49 @@
+---
+const { title } = Astro.props;
+---
+
+<html>
+  <head>
+    <title>{title} | Heritage Restored</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo-container">
+        <a href="/">
+          <img src="/HRLOGO.png" alt="Heritage Restored Logo" class="site-logo" />
+        </a>
+      </div>
+      <nav>
+        <div>
+          <a href="/">Home</a>
+          <a href="/resources">Resources</a>
+          <a href="/contact">Contact</a>
+          <a href="/donate">Donate</a>
+        </div>
+        <div class="social">
+          <a href="https://www.youtube.com/@HeritageRestored" target="_blank" aria-label="YouTube">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="currentColor" width="20" height="20"><path d="M549.7 124.1c-6.3-23.8-24.9-42.4-48.6-48.7C456.5 64 288 64 288 64s-168.5 0-213.1 11.4c-23.8 6.3-42.4 24.9-48.6 48.7C16 168.7 16 256 16 256s0 87.3 10.3 131.9c6.3 23.8 24.9 42.4 48.6 48.7C119.5 448 288 448 288 448s168.5 0 213.1-11.4c23.8-6.3 42.4-24.9 48.6-48.7C560 343.3 560 256 560 256s0-87.3-10.3-131.9zM232 336V176l142.7 80L232 336z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/restoredheritage/" target="_blank" aria-label="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="20" height="20"><path d="M224,202.66A53.34,53.34,0,1,0,277.34,256,53.38,53.38,0,0,0,224,202.66Zm124.71-41a54,54,0,0,0-30.18-30.18C296.09,122.24,256,120,224,120s-72.09,2.24-94.53,11.49a54,54,0,0,0-30.18,30.18C88.24,151.91,86,191.91,86,224s2.24,72.09,11.49,94.53a54,54,0,0,0,30.18,30.18C151.91,359.76,191.91,362,224,362s72.09-2.24,94.53-11.49a54,54,0,0,0,30.18-30.18C359.76,296.09,362,256,362,224S359.76,151.91,348.71,161.66ZM398.8,80.41A47.19,47.19,0,1,0,446,127.6,47.19,47.19,0,0,0,398.8,80.41ZM224,338.66A114.66,114.66,0,1,1,338.66,224,114.77,114.77,0,0,1,224,338.66Z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@heritage_restored" target="_blank" aria-label="TikTok">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="20" height="20"><path d="M448,209.3V129.8a127.2,127.2,0,0,1-75-23.7V285.5a136.43,136.43,0,1,1-136.5-136.5,134.21,134.21,0,0,1,16.7,1.1V103.6a178.59,178.59,0,0,0-16.7-.8C106.5,102.8,0,209.3,0,336S106.5,569.2,233.3,569.2,448,462.7,448,336Z"/></svg>
+          </a>
+          <a href="https://x.com/HeritageRestord" target="_blank" aria-label="X">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="20" height="20"><path d="M370.6 36H449L304.1 217.5 475 476H338.6L234.4 322.3 112.1 476H33.1L188.5 284.2 23 36H163.3L257.7 175.4 370.6 36z"/></svg>
+          </a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>At Heritage Restored, all our work is dedicated to the public domain.</p>
+    </footer>
+  </body>
+</html>
