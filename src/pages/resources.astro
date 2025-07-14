@@ -1,8 +1,52 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ResourceList from '../components/ResourceList.jsx';
+
+const SHEET_CSV_URL =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vQqkqC2AftoFR9eE3kbpFj9OJwoksCCLc2mAZ6lG5ACfq7vWbpkPsZ2RP7c8hWZC6vcS-bG4f-2qfeE/pub?output=csv';
 ---
 
 <Layout title="Resources">
   <h1>Resources</h1>
-  <p>Here you'll find helpful links, articles, tools, and partner information that support restoration projects.</p>
+  <p>
+    Heritage Restored generally supports all the ministries listed here but may
+    not be in complete agreement on everything that ministry stands for.
+  </p>
+
+  <!--
+    These few global rules will target the Flex wrapper
+    that our React component emits (see below).
+  -->
+  <style global>
+    .columns {
+      display: flex;
+      gap: 2rem;
+    }
+    .column {
+      flex: 1;
+    }
+    .category {
+      margin-bottom: 2rem;
+    }
+    .category h2 {
+      color: #003366;
+      margin-bottom: 0.5rem;
+    }
+    .category ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    @media (max-width: 600px) {
+      .columns {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <!--
+    This component now implements a simple “weight-based” split 
+    (by number of links per category) so each column starts
+    at the very top and you never get that big gap in the middle.
+  -->
+  <ResourceList client:load csvUrl={SHEET_CSV_URL} />
 </Layout>
