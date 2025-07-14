@@ -1,4 +1,5 @@
 ---
+// src/pages/resources.astro
 import Layout from '../layouts/Layout.astro';
 import ResourceList from '../components/ResourceList.jsx';
 
@@ -13,11 +14,8 @@ const SHEET_CSV_URL =
     not be in complete agreement on everything that ministry stands for.
   </p>
 
-  <!--
-    These few global rules will target the Flex wrapper
-    that our React component emits (see below).
-  -->
-  <style global>
+  <style is:global>
+    /* Flex-based two-column layout */
     .columns {
       display: flex;
       gap: 2rem;
@@ -25,28 +23,42 @@ const SHEET_CSV_URL =
     .column {
       flex: 1;
     }
+    @media (max-width: 600px) {
+      .columns {
+        flex-direction: column;
+      }
+    }
+
+    /* Category styling */
     .category {
       margin-bottom: 2rem;
     }
     .category h2 {
-      color: #003366;
+      color: #003366; /* default heading color */
       margin-bottom: 0.5rem;
     }
     .category ul {
       margin: 0;
       padding-left: 1.2rem;
     }
-    @media (max-width: 600px) {
-      .columns {
-        flex-direction: column;
+    .columns a {
+      color: #004499; /* default link color */
+      text-decoration: none;
+    }
+
+/* Dark‐mode overrides */
+    @media (prefers-color-scheme: dark) {
+      /* Headings in dark use a lighter sky-blue */
+      .category h2 {
+        color: #87CEFA;
+      }
+      /* Links slightly different pastel blue */
+      .columns a {
+        color: #ADD8E6;
       }
     }
   </style>
 
-  <!--
-    This component now implements a simple “weight-based” split 
-    (by number of links per category) so each column starts
-    at the very top and you never get that big gap in the middle.
-  -->
+  <!-- Hydrate & render live sheet data -->
   <ResourceList client:load csvUrl={SHEET_CSV_URL} />
 </Layout>
