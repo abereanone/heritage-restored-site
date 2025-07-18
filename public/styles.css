@@ -86,12 +86,22 @@ html.dark-mode a {
   color: #9ac8f2;   /* or whatever light blue/gray you like */
 }
 
-/* Remove underlines from all links across the site */
-a {
-  text-decoration: none;
-}
-
 /* (Optional) Add a hover indicator if you still want visual feedback */
 a:hover {
   text-decoration: underline;
 }
+
+/* define a link‐color var and override in dark mode */
+:root {
+  --link-color: #004499;    /* your light‐mode link color */
+}
+html.dark-mode {
+  --link-color: #ADD8E6;    /* your dark‐mode link color */
+}
+
+/* apply it globally */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
