@@ -2,15 +2,50 @@
 const { title } = Astro.props;
 ---
 
-<html>
+<html class="theme-root">
   <head>
     <title>{title} | Heritage Restored</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles.css" />
+    <!-- Theme variables and dark-mode styles -->
+    <style>
+      :root {
+        --card-border: #ccc;
+        --photo-bg: #eee;
+        --text-color: #000;
+        --bg-color: #fff;
+      }
+      .dark-mode {
+        --card-border: #555;
+        --photo-bg: #444;
+        --text-color: #ddd;
+        --bg-color: #121212;
+      }
+      html.theme-root, body {
+        background: var(--bg-color);
+        color: var(--text-color);
+      }
+      header {
+        position: relative;
+      }
+      .theme-toggle-button {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--photo-bg);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        color: var(--text-color);
+        font-size: 0.9rem;
+      }
+    </style>
   </head>
   <body>
     <header>
+      <button id="theme-toggle" class="theme-toggle-button">Dark Mode</button>
       <div class="logo-container">
         <a href="/">
           <img src="/HRLOGO.png" alt="Heritage Restored Logo" class="site-logo" />
@@ -20,10 +55,11 @@ const { title } = Astro.props;
         <div>
           <a href="/">Home</a>
           <a href="/resources">Resources</a>
+          <!--<a href="/people">People</a>-->
           <a href="/contact">Contact</a>
           <a href="/donate">Donate</a>
         </div>
-        <div class="social">
+          <div class="social">
           <a href="https://www.youtube.com/@HeritageRestored" target="_blank" aria-label="YouTube">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="currentColor" width="20" height="20"><path d="M549.7 124.1c-6.3-23.8-24.9-42.4-48.6-48.7C456.5 64 288 64 288 64s-168.5 0-213.1 11.4c-23.8 6.3-42.4 24.9-48.6 48.7C16 168.7 16 256 16 256s0 87.3 10.3 131.9c6.3 23.8 24.9 42.4 48.6 48.7C119.5 448 288 448 288 448s168.5 0 213.1-11.4c23.8-6.3 42.4-24.9 48.6-48.7C560 343.3 560 256 560 256s0-87.3-10.3-131.9zM232 336V176l142.7 80L232 336z"/></svg>
           </a>
@@ -45,5 +81,26 @@ const { title } = Astro.props;
     <footer>
       <p>At Heritage Restored, all our work is dedicated to the public domain.</p>
     </footer>
+    <!-- Dark mode script -->
+    <script>
+      const toggleBtn = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          root.classList.add('dark-mode');
+          toggleBtn.textContent = 'Light Mode';
+        } else {
+          root.classList.remove('dark-mode');
+          toggleBtn.textContent = 'Dark Mode';
+        }
+      }
+      const saved = localStorage.getItem('theme') || 'light';
+      applyTheme(saved);
+      toggleBtn.addEventListener('click', () => {
+        const newTheme = root.classList.contains('dark-mode') ? 'light' : 'dark';
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+    </script>
   </body>
 </html>

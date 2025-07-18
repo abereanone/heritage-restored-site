@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro'
+
+// Replace with your published Google Sheet CSV URL
+const peopleUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAoRS1CRZZnE9X0d4icWe7OepYlM0Fw_bVfXdWg3fdbfpYQA2yf9dNzAwI2OI2D8yik7Z6ensNHWX5/pub?output=csv'
+
+const response = await fetch(peopleUrl);
+const csvText = await response.text();
+
+function parseCSV(csv) {
+  const [headerLine, ...lines] = csv.trim().split('\n');
+  const headers = headerLine.split(',').map(h => h.trim());
+  return lines.map(line => {
+    const values = line.split(',').map(v => v.trim());
+    return Object.fromEntries(headers.map((h, i) => [h, values[i]]));
+  }).filter(row => row.visible?.toLowerCase() !== 'no');
+}
+
+const people = parseCSV(csvText).sort((a, b) => parseInt(a.priority) - parseInt(b.priority));
+---
+
+<Layout title="People">
+  <h1>Our People</h1>
+  <div class="people-grid">
+    {people.map(person => (
+      <div class="person-card">
+        <div class="person-photo">[photo]</div> <!-- placeholder -->
+        <h2>{person.name}</h2>
+        <p><strong>{person.role}</strong></p>
+        {person.bio && <p>{person.bio}</p>}
+        {person.link_url && <p><a href={person.link_url} target="_blank">{person.link_label || 'Learn more'}</a></p>}
+      </div>
+    ))}
+  </div>
+</Layout>
+
+<style>
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  max-width: calc(4 * 250px + 3 * 2rem); /* Optional centering wrapper */
+  margin: 0 auto;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+.person-card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+.person-photo {
+  width: 120px;
+  height: 120px;
+  background: #eee;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+}
+</style>

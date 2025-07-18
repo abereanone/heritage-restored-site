@@ -44,6 +44,7 @@ main {
   font-size: 1.3rem;
   display: inline-flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .social svg {
@@ -79,4 +80,18 @@ main {
   nav a {
     color: #eee;
   }
+}
+/* When you toggle dark mode via the .dark-mode class… */
+html.dark-mode a {
+  color: #9ac8f2;   /* or whatever light blue/gray you like */
+}
+
+/* Remove underlines from all links across the site */
+a {
+  text-decoration: none;
+}
+
+/* (Optional) Add a hover indicator if you still want visual feedback */
+a:hover {
+  text-decoration: underline;
 }
