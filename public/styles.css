@@ -37,6 +37,18 @@ header, footer {
   padding: 1rem;
 }
 
+/* Override link colors in header/nav for dark background */
+header a,
+header nav a,
+footer a {
+  color: #fff;
+}
+header a:hover,
+header nav a:hover,
+footer a:hover {
+  color: #ddd;
+}
+
 .logo-container {
   text-align: center;
   padding-bottom: 0.5rem;
@@ -149,4 +161,30 @@ main {
   nav a {
     color: #eee;
   }
+}
+
+/* ==== Overrides for mobile DuckDuckGo ==== */
+.bio-section .person-photo {
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.bio-section .person-photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.bio-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.bio-section h2 {
+  margin-top: 0;
+  padding-top: 0.5rem;
 }
