@@ -10,7 +10,7 @@
   "dependencies": {
     "18": "^0.0.0",
     "@astrojs/react": "^4.3.0",
-    "astro": "^5.10.0",
+    "astro": "^5.12.5",
     "papaparse": "^5.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
