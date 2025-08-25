@@ -8,13 +8,13 @@ const SHEET_CSV_URL =
 ---
 
 <Layout title="Resources">
+  <article>
   <h1>Resources</h1>
   <p>
     Heritage Restored generally supports all the ministries listed here but may
     not be in complete agreement on everything that ministry stands for.
   </p>
 
-  <!-- All styles moved to global styles.css -->
-  <!-- Hydrate & render live sheet data -->
   <ResourceList client:load csvUrl={SHEET_CSV_URL} />
+  </article>
 </Layout>
