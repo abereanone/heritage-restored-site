@@ -14,50 +14,7 @@ const SHEET_CSV_URL =
     not be in complete agreement on everything that ministry stands for.
   </p>
 
-  <style is:global>
-    /* Flex-based two-column layout */
-    .columns {
-      display: flex;
-      gap: 2rem;
-    }
-    .column {
-      flex: 1;
-    }
-    @media (max-width: 600px) {
-      .columns {
-        flex-direction: column;
-      }
-    }
-
-    /* Category styling */
-    .category {
-      margin-bottom: 2rem;
-    }
-    .category h2 {
-      color: #4393e4ff; /* default heading color */
-      margin-bottom: 0.5rem;
-    }
-    .category ul {
-      margin: 0;
-      padding-left: 1.2rem;
-    }
-    .columns a {
-      color: #004499; /* default link color */
-    }
-
-/* Dark‐mode overrides */
-    @media (prefers-color-scheme: dark) {
-      /* Headings in dark use a lighter sky-blue */
-      .category h2 {
-        color: #87CEFA;
-      }
-      /* Links slightly different pastel blue */
-      .columns a {
-        color: #ADD8E6;
-      }
-    }
-  </style>
-
+  <!-- All styles moved to global styles.css -->
   <!-- Hydrate & render live sheet data -->
   <ResourceList client:load csvUrl={SHEET_CSV_URL} />
 </Layout>

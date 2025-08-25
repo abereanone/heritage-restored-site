@@ -1,85 +1,100 @@
-  import React, { useState, useEffect } from 'react';
-  import Papa from 'papaparse';
+import React, { useState, useEffect } from 'react';
+import Papa from 'papaparse';
 
-  export default function PeopleList({ csvUrl }) {
-    const [people, setPeople] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [expanded, setExpanded] = useState({});
+export default function PeopleList({ csvUrl }) {
+  const [people, setPeople] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState({});
 
-    useEffect(() => {
-      let cancelled = false;
-      fetch(csvUrl)
-        .then(res => res.text())
-        .then(csvText => {
-          if (cancelled) return;
-          Papa.parse(csvText, {
-            header: true,
-            skipEmptyLines: true,
-            complete: ({ data }) => {
-              const filtered = data
-                .filter(row => row.visible?.toLowerCase() !== 'no')
-                .sort((a, b) => parseInt(a.priority) - parseInt(b.priority));
-              setPeople(filtered);
-              setLoading(false);
-            },
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          setLoading(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch(csvUrl)
+      .then(res => res.text())
+      .then(csvText => {
+        if (cancelled) return;
+        Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          complete: ({ data }) => {
+            const cleaned = data
+              // visible: anything not an explicit "no" (case/whitespace safe)
+              .filter(row => (row.visible ?? '').toString().trim().toLowerCase() !== 'no')
+              .map(row => {
+                const priority = parseInt((row.priority ?? '').toString().trim(), 10);
+                return {
+                  ...row,
+                  name: (row.name ?? '').toString().trim(),
+                  role: (row.role ?? '').toString().trim(),
+                  bio: (row.bio ?? '').toString().trim(),
+                  link_url: (row.link_url ?? '').toString().trim(),
+                  link_label: (row.link_label ?? '').toString().trim(),
+                  photo_url: (row.photo_url ?? '').toString().trim(),
+                  _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER
+                };
+              })
+              .sort((a, b) => a._priority - b._priority);
+
+            setPeople(cleaned);
+            setLoading(false);
+          },
+          error: () => setLoading(false)
         });
-      return () => { cancelled = true; };
-    }, [csvUrl]);
+      })
+      .catch(() => setLoading(false));
+    return () => { cancelled = true; };
+  }, [csvUrl]);
 
-    if (loading) {
-      return <div>Loading people now... be patient</div>;
-    }
+  if (loading) return <div>Loading people now... be patient</div>;
 
-    return (
-      <div className="people-grid">
-        {people.map(person => {
-          const isExpanded = !!expanded[person.name];
-          const shouldTruncate = person.bio && person.bio.length > 100;
-          const displayBio = !isExpanded && shouldTruncate
-            ? `${person.bio.substring(0, 100)} ... `
-            : person.bio;
+  return (
+    <div className="people-grid">
+      {people.map((person, idx) => {
+        const key = person.name || `person-${idx}`;
+        const isExpanded = !!expanded[key];
+        const shouldTruncate = person.bio && person.bio.length > 100;
+        const displayBio = !isExpanded && shouldTruncate
+          ? `${person.bio.substring(0, 100)} ... `
+          : person.bio;
 
-          return (
-            <div className="person-card" key={person.name}>
-              <div className="person-photo">
-                <img src={`/${person.photo_url}`} alt={person.name} />
-              </div>
-              <h2>{person.name}</h2>
-              <p><strong>{person.role}</strong></p>
-              {person.bio && (
-                <p>
-                  {displayBio}
-                  {shouldTruncate && (
-                    <a
-                      href="#"
-                      onClick={e => {
-                        e.preventDefault();
-                        setExpanded(prev => ({
-                          ...prev,
-                          [person.name]: !isExpanded,
-                        }));
-                      }}
-                    >
-                      {isExpanded ? ' Show less' : ' Read more'}
-                    </a>
-                  )}
-                </p>
-              )}
-              {person.link_url && (
-                <p>
-                  <a href={person.link_url} target="_blank" rel="noopener noreferrer">
-                    {person.link_label || 'Learn more'}
-                  </a>
-                </p>
-              )}
+        return (
+          <div className="person-card" key={key}>
+            <div className="person-photo">
+              <img
+                src={`/${person.photo_url || 'placeholder.png'}`}
+                alt={person.name || 'Person'}
+              />
             </div>
-          );
-        })}
-      </div>
-    );
-  }
+            {person.name && <h2>{person.name}</h2>}
+            {person.role && <p><strong>{person.role}</strong></p>}
+
+            {person.bio && (
+              <p>
+                {displayBio}
+                {shouldTruncate && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setExpanded(prev => ({ ...prev, [key]: !isExpanded }))
+                  }
+                  aria-expanded={isExpanded}
+                  className="inline-link-button"
+                >
+                  {isExpanded ? ' Show less' : ' Read more'}
+                </button>
+                )}
+              </p>
+            )}
+
+            {person.link_url && (
+              <p>
+                <a href={person.link_url} target="_blank" rel="noopener noreferrer">
+                  {person.link_label || 'Learn more'}
+                </a>
+              </p>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}

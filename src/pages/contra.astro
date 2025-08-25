@@ -6,66 +6,22 @@ import Contra from '../components/Contra.jsx';
 const contraUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTG1CyLeDD32a4Uxbkx-dF1JBp-NVrG_tyopFGpuPgGD1uSrFlQ-NMk8ENNImqvQtyHJE-EP2TAf5Dh/pub?output=csv';
 ---                   
 <Layout title="Contraception Methods">
-  <h1>Contraception Methods</h1>
+  <h1>"Contraception" Methods</h1>
   <p>Below is a list of methods, categorized, with mechanism notes.</p>
   <ul>
     <li><strong>Method</strong>: The name of the method.</li>
-    <li><strong>Category</strong>: Indicates whether the method is contraceptive, abortifacient or abortive.</li>
+    <li><strong>Category</strong>: Indicates whether the method is contraceptive, abortifacient or abortive. Sadly, our world categorizes all of these as contraception to be deceptive.</li>
     <ul>
-      <li><em>Contraceptive – Prevents conception. Does not result in the taking of a life.</li>
+      <li><em>Contraceptive</em> – Prevents conception. Does not result in the taking of a life.</li>
       <li><em>Abortive</em> – Used after conception to take a human life. Always murderous.</li>
       <li><em>Abortifacient</em> – Often used as contraceptive resulting in unsafe conditions for babies that do become conceived. Life is killed, but not always knowingly. Sometimes also used intentionally to murder the child.</li>
     </ul>    
-    <li><strong>Contraception Mechanisms</strong>: A brief explanation of how the method works.</li>
+    <li><strong>"Contraception" Mechanisms</strong>: A brief explanation of how the method works.</li>
     <ol>
-      <li><em>Prevents ovulation</em> - no egg, no fertilization.</li>
-      <li><em>Alters mucus</em> – Some contraceptives claim that they thicken cervical mucus, making it impenetrable to sperm. This is demonstrable false, but still practiced.</li>
+      <li><em>Prevents ovulation</em> – no egg, no fertilization.</li>
+      <li><em>Alters mucus</em> – Some contraceptives claim that they thicken cervical mucus, making it impenetrable to sperm. This is demonstrably false, but still practiced.</li>
       <li><em>Thinning uterine lining</em> – Thins the lining of the uterine wall (endometrium) to prevent implantation. Little one's homes are made uninhabitable.</li>
     </ol>    
   </ul>
   <Contra client:load csvUrl={contraUrl} />
 </Layout>
-
-<style is:global>
-  /* Contra Page Styles */
-  .contra-card.abortive { background-color: #dc143c; }
-  .contra-card.abortifacient { background-color: #f8d7da; }
-  .contra-card.contraceptive { background-color: #d4edda; }
-  .contra-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem; /* spacing between cards — keep this for separation */
-  padding: 2rem 1rem;
-  max-width: calc(3 * 350px + 2 * 2rem);
-  margin: 0 auto;
-}
-
-.contra-card {
-  background: var(--bg-color);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;  /* reduced from 1.5rem */
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-.contra-card h2 {
-  margin-top: 0;
-  margin-bottom: 0.25rem; /* tighter than 0.5rem */
-}
-
-.contra-card p {
-  margin: 0.25rem 0; /* tighter vertical spacing */
-}
-@media (max-width: 600px) {
-    .contra-grid {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-      padding: 1rem;
-      max-width: 100%;
-    }
-  }
-</style>

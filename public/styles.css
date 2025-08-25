@@ -4,14 +4,18 @@
   --text-color: #222;
   --card-border: #ccc;
   --photo-bg: #eee;
-  --link-color: #004499;
+  --heading-light: #4393e4;
+  --heading-dark: #87CEFA;
+  --link-light: #004499;
+  --link-light-h: #002266;
+  --link-dark: #ADD8E6;
+  --link-dark-h: #ffffff;
 }
 html.dark-mode {
   --bg-color: #111;
   --text-color: #eee;
   --card-border: #555;
   --photo-bg: #444;
-  --link-color: #ADD8E6;
 }
 
 body {
@@ -23,12 +27,20 @@ body {
 }
 
 a {
-  color: var(--link-color);
+  color: var(--link-light);
   text-decoration: none;
+  font-weight: 500;
 }
-a:hover {
+a:hover,
+a:focus {
+  color: var(--link-light-h);
   text-decoration: underline;
 }
+
+/* Dark-mode links */
+html.dark-mode a { color: var(--link-dark); }
+html.dark-mode a:hover,
+html.dark-mode a:focus { color: var(--link-dark-h); }
 
 /* ==== Header & Nav ==== */
 header, footer {
@@ -37,58 +49,27 @@ header, footer {
   padding: 1rem;
 }
 
-/* Override link colors in header/nav for dark background */
 header a,
 header nav a,
-footer a {
-  color: #fff;
-}
+footer a { color: #fff; }
 header a:hover,
 header nav a:hover,
-footer a:hover {
-  color: #ddd;
-}
+footer a:hover { color: #ddd; }
 
-.logo-container {
-  text-align: center;
-  padding-bottom: 0.5rem;
-}
-.logo-container .site-logo {
-  max-height: 120px;  /* Bigger logo */
-  width: auto;
-  display: block;
-  margin: 0 auto;
-}
+.logo-container { text-align: center; padding-bottom: 0.5rem; }
+.logo-container .site-logo { max-height: 120px; width: auto; display: block; margin: 0 auto; }
 
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-}
-nav a {
-  margin: 0.5rem;
-}
+nav { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+nav a { margin: 0.5rem; }
 
 /* ==== Main Content ==== */
-main {
-  padding: 1rem;
-}
+main { padding: 1rem; }
 
 /* ==== Social Icons ==== */
-.social a {
-  margin-left: 0.5rem;
-  font-size: 1.3rem;
-  display: inline-flex;
-  align-items: center;
-}
-.social svg {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
-}
+.social a { margin-left: 0.5rem; font-size: 1.3rem; display: inline-flex; align-items: center; }
+.social svg { width: 20px; height: 20px; fill: currentColor; }
 
-/* ==== People Page (and any grid-based page) ==== */
+/* ==== People Page ==== */
 .people-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -97,17 +78,10 @@ main {
   max-width: 1100px;
   margin: 0 auto;
 }
-
-/* Single‐column fallback on phones */
 @media (max-width: 600px) {
-  .people-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 1rem;
-  }
+  .people-grid { grid-template-columns: 1fr; gap: 1rem; padding: 1rem; }
 }
 
-/* ==== Person Card ==== */
 .person-card {
   background: var(--bg-color);
   border: 1px solid var(--card-border);
@@ -119,81 +93,101 @@ main {
   align-items: center;
 }
 
-/* ==== Photo Styling ==== */
-.person-photo {
-  width: 120px;
-  height: 120px;
-  background: var(--photo-bg);
-  border-radius: 50%;
-  margin: 0 auto 1rem;
+.person-photo { width: 120px; height: 120px; background: var(--photo-bg); border-radius: 50%; margin: 0 auto 1rem; overflow: hidden; }
+.person-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  /* add this so the container actually clips down to a circle */
-  overflow: hidden;
+/* Inline link button ("Read more / Show less") */
+.inline-link-button {
+  margin-left: 0.25rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: var(--link-light);
+  text-decoration: underline;
 }
-
-.person-photo img {
-  /* make the image fill the circle and crop to fit */
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;  /* remove any inline whitespace artifacts */
-}
+.inline-link-button:hover,
+.inline-link-button:focus { color: var(--link-light-h); }
+html.dark-mode .inline-link-button { color: var(--link-dark); }
+html.dark-mode .inline-link-button:hover,
+html.dark-mode .inline-link-button:focus { color: var(--link-dark-h); }
 
 /* ==== Responsive tweaks ==== */
 @media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .logo-container {
-    padding-bottom: 1rem;
-  }
-  .site-logo {
-    max-height: 60px;
-  }
+  nav { flex-direction: column; align-items: flex-start; }
+  .logo-container { padding-bottom: 1rem; }
+  .site-logo { max-height: 60px; }
 }
 
-/* ==== Dark‐mode via media query (optional fallback) ==== */
+/* ==== Dark‑mode via media query (optional fallback) ==== */
 @media (prefers-color-scheme: dark) {
-  header, footer {
-    background: #000;
-  }
-  nav a {
-    color: #eee;
-  }
+  header, footer { background: #000; }
+  nav a { color: #eee; }
+  .category h2 { color: var(--heading-dark); }
+  .columns a { color: var(--link-dark); }
+  .columns a:hover,
+  .columns a:focus { color: var(--link-dark-h); }
 }
 
 /* ==== Overrides for mobile DuckDuckGo ==== */
-.bio-section .person-photo {
-  border-radius: 50% !important;
-  overflow: hidden !important;
-  margin-bottom: 1.25rem !important;
+.bio-section .person-photo { border-radius: 50% !important; overflow: hidden !important; margin-bottom: 1.25rem !important; }
+.bio-section .person-photo img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; }
+.bio-section { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.bio-section h2 { margin-top: 0; padding-top: 0.5rem; }
+
+/* Always render contra‑card text in black for readability */
+.contra-card { color: #000; }
+html.dark-mode .contra-card { color: #000; }
+
+/* ==== Resources Page Styles ==== */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+  align-items: start;
+}
+.column { min-width: 0; }
+@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
+
+.category { margin-bottom: 2rem; }
+.category h2 { color: var(--heading-light); margin-bottom: 0.5rem; }
+.category ul { margin: 0; padding-left: 1.2rem; }
+
+/* ==== Contra Page Styles ==== */
+.contra-card.abortive { background-color: #dc143c; }
+.contra-card.abortifacient { background-color: #f8d7da; }
+.contra-card.contraceptive { background-color: #d4edda; }
+
+.contra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 2rem 1rem;
+  max-width: calc(3 * 350px + 2 * 2rem);
+  margin: 0 auto;
 }
 
-.bio-section .person-photo img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  display: block !important;
-}
-
-.bio-section {
+.contra-card {
+  background: var(--bg-color);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  text-align: left;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  justify-content: space-between;
+  height: 100%;
 }
 
-.bio-section h2 {
-  margin-top: 0;
-  padding-top: 0.5rem;
-}
-/* Always render contra‐card text in black for readability */
-.contra-card {
-  color: #000;
-}
+.contra-card h2 { margin-top: 0; margin-bottom: 0.25rem; }
+.contra-card p { margin: 0.25rem 0; }
 
-/* Even in dark‐mode, keep card text black */
-html.dark-mode .contra-card {
-  color: #000;
+@media (max-width: 600px) {
+  .contra-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 1rem;
+    max-width: 100%;
+  }
 }

@@ -11,27 +11,3 @@ const peopleUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAoRS1CRZZnE
   <PeopleList client:load csvUrl={peopleUrl} />
 </Layout>
 
-<style is:global>
-  .people-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    max-width: calc(4 * 250px + 3 * 2rem);
-    margin: 0 auto;
-    gap: 2rem;
-    padding: 1rem 0;
-  }
-  .person-card {
-    border: 1px solid var(--card-border);
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    background: var(--bg-color);
-  }
-  .person-photo {
-    width: 120px;
-    height: 120px;
-    background: var(--photo-bg);
-    border-radius: 50%;
-    margin: 0 auto 1rem;
-  }
-</style>
