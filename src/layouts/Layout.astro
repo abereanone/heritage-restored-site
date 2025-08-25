@@ -24,39 +24,6 @@ const { title } = Astro.props;
     </script>
     <link rel="stylesheet" href="/styles.css" />
     <!-- Theme variables and dark-mode styles -->
-    <style>
-      :root {
-        --card-border: #ccc;
-        --photo-bg: #eee;
-        --text-color: #000;
-        --bg-color: #fff;
-      }
-      .dark-mode {
-        --card-border: #555;
-        --photo-bg: #444;
-        --text-color: #ddd;
-        --bg-color: #121212;
-      }
-      html.theme-root, body {
-        background: var(--bg-color);
-        color: var(--text-color);
-      }
-      header {
-        position: relative;
-      }
-      .theme-toggle-button {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: var(--photo-bg);
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        color: var(--text-color);
-        font-size: 0.9rem;
-      }
-    </style>
   </head>
   <body id="top">
     <header>
