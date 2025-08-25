@@ -13,17 +13,23 @@ const contraUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTG1CyLeDD32a
     <li><strong>Category</strong>: Indicates whether the method is contraceptive, abortifacient or abortive.</li>
     <ul>
       <li><em>Contraceptive – Prevents conception. Does not result in the taking of a life.</li>
-      <li><em>Abortive</em> – Used after conception to take a human life.</li>
-      <li><em>Abortifacient</em> – Often used as contraceptive, but results in unsafe conditions for babies that are conceived and takes a human life.</li>
+      <li><em>Abortive</em> – Used after conception to take a human life. Always murderous.</li>
+      <li><em>Abortifacient</em> – Often used as contraceptive resulting in unsafe conditions for babies that do become conceived. Life is killed, but not always knowingly. Sometimes also used intentionally to murder the child.</li>
     </ul>    
-    <li><strong>Mechanism</strong>: A brief explanation of how the method works.</li>
+    <li><strong>Contraception Mechanisms</strong>: A brief explanation of how the method works.</li>
+    <ol>
+      <li><em>Prevents ovulation</em> - no egg, no fertilization.</li>
+      <li><em>Alters mucus</em> – Some contraceptives claim that they thicken cervical mucus, making it impenetrable to sperm. This is demonstrable false, but still practiced.</li>
+      <li><em>Thinning uterine lining</em> – Thins the lining of the uterine wall (endometrium) to prevent implantation. Little one's homes are made uninhabitable.</li>
+    </ol>    
   </ul>
   <Contra client:load csvUrl={contraUrl} />
 </Layout>
 
 <style is:global>
   /* Contra Page Styles */
-  .contra-card.abort { background-color: #f8d7da; }
+  .contra-card.abortive { background-color: #dc143c; }
+  .contra-card.abortifacient { background-color: #f8d7da; }
   .contra-card.contraceptive { background-color: #d4edda; }
   .contra-grid {
   display: grid;
