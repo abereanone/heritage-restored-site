@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Contra from '../components/Contra.jsx';
+
+// Replace with your published Google Sheet CSV URL for contraception methods
+const contraUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTG1CyLeDD32a4Uxbkx-dF1JBp-NVrG_tyopFGpuPgGD1uSrFlQ-NMk8ENNImqvQtyHJE-EP2TAf5Dh/pub?output=csv';
+---                   
+<Layout title="Contraception Methods">
+  <h1>Contraception Methods</h1>
+  <p>Below is a list of methods, categorized, with mechanism notes.</p>
+  <ul>
+    <li><strong>Method</strong>: The name of the method.</li>
+    <li><strong>Category</strong>: Indicates whether the method is contraceptive, abortifacient or abortive.</li>
+    <ul>
+      <li><em>Contraceptive – Prevents conception. Does not result in the taking of a life.</li>
+      <li><em>Abortive</em> – Used after conception to take a human life.</li>
+      <li><em>Abortifacient</em> – Often used as contraceptive, but results in unsafe conditions for babies that are conceived and takes a human life.</li>
+    </ul>    
+    <li><strong>Mechanism</strong>: A brief explanation of how the method works.</li>
+  </ul>
+  <Contra client:load csvUrl={contraUrl} />
+</Layout>
+
+<style is:global>
+  /* Contra Page Styles */
+  .contra-card.abort { background-color: #f8d7da; }
+  .contra-card.contraceptive { background-color: #d4edda; }
+  .contra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem; /* spacing between cards — keep this for separation */
+  padding: 2rem 1rem;
+  max-width: calc(3 * 350px + 2 * 2rem);
+  margin: 0 auto;
+}
+
+.contra-card {
+  background: var(--bg-color);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;  /* reduced from 1.5rem */
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.contra-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.25rem; /* tighter than 0.5rem */
+}
+
+.contra-card p {
+  margin: 0.25rem 0; /* tighter vertical spacing */
+}
+@media (max-width: 600px) {
+    .contra-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      max-width: 100%;
+    }
+  }
+</style>
