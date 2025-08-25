@@ -188,3 +188,12 @@ main {
   margin-top: 0;
   padding-top: 0.5rem;
 }
+/* Always render contra‐card text in black for readability */
+.contra-card {
+  color: #000;
+}
+
+/* Even in dark‐mode, keep card text black */
+html.dark-mode .contra-card {
+  color: #000;
+}
