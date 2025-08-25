@@ -6,7 +6,7 @@ export default function ResourceList({ csvUrl }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${csvUrl}&_=${Date.now()}`, { cache: 'no-store' })
+    fetch(csvUrl)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.text();

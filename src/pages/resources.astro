@@ -3,8 +3,7 @@
 import Layout from '../layouts/Layout.astro';
 import ResourceList from '../components/ResourceList.jsx';
 
-const SHEET_CSV_URL =
-  'https://docs.google.com/spreadsheets/d/e/2PACX-1vQqkqC2AftoFR9eE3kbpFj9OJwoksCCLc2mAZ6lG5ACfq7vWbpkPsZ2RP7c8hWZC6vcS-bG4f-2qfeE/pub?output=csv';
+const resourcesUrl = '/api/resources.csv';
 ---
 
 <Layout title="Resources">
@@ -15,7 +14,7 @@ const SHEET_CSV_URL =
       not be in complete agreement on everything that ministry stands for.
     </p>
 
-    <ResourceList client:load csvUrl={SHEET_CSV_URL} />
+    <ResourceList client:load csvUrl={resourcesUrl} />
     <p class="back-to-top"><a href="#top">↑ Back to top</a></p>
   </article>
 </Layout>
