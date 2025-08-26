@@ -8,6 +8,12 @@ export default function PeopleList({ csvUrl }) {
 
   useEffect(() => {
     let cancelled = false;
+
+    // check URL param
+    const params = new URLSearchParams(window.location.search);
+    const val = (params.get('showall') || '').trim().toLowerCase();
+    const showall = val === 'y' || val === 'yes' || val === 'true' || val === '1';
+
     fetch(csvUrl)
       .then(res => res.text())
       .then(csvText => {
@@ -16,23 +22,29 @@ export default function PeopleList({ csvUrl }) {
           header: true,
           skipEmptyLines: true,
           complete: ({ data }) => {
-            const cleaned = data
-              // visible: anything not an explicit "no" (case/whitespace safe)
-              .filter(row => (row.visible ?? '').toString().trim().toLowerCase() !== 'no')
-              .map(row => {
-                const priority = parseInt((row.priority ?? '').toString().trim(), 10);
-                return {
-                  ...row,
-                  name: (row.name ?? '').toString().trim(),
-                  role: (row.role ?? '').toString().trim(),
-                  bio: (row.bio ?? '').toString().trim(),
-                  link_url: (row.link_url ?? '').toString().trim(),
-                  link_label: (row.link_label ?? '').toString().trim(),
-                  photo_url: (row.photo_url ?? '').toString().trim(),
-                  _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER
-                };
-              })
-              .sort((a, b) => a._priority - b._priority);
+            let cleaned = data;
+
+            if (!showall) {
+              // only filter out "no" rows if showall is not set
+              cleaned = cleaned.filter(
+                row => (row.visible ?? '').toString().trim().toLowerCase() !== 'no'
+              );
+            }
+
+            cleaned = cleaned.map(row => {
+              const priority = parseInt((row.priority ?? '').toString().trim(), 10);
+              return {
+                ...row,
+                name: (row.name ?? '').toString().trim(),
+                role: (row.role ?? '').toString().trim(),
+                bio: (row.bio ?? '').toString().trim(),
+                link_url: (row.link_url ?? '').toString().trim(),
+                link_label: (row.link_label ?? '').toString().trim(),
+                photo_url: (row.photo_url ?? '').toString().trim(),
+                _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER
+              };
+            })
+            .sort((a, b) => a._priority - b._priority);
 
             setPeople(cleaned);
             setLoading(false);
@@ -41,6 +53,7 @@ export default function PeopleList({ csvUrl }) {
         });
       })
       .catch(() => setLoading(false));
+
     return () => { cancelled = true; };
   }, [csvUrl]);
 
@@ -51,7 +64,7 @@ export default function PeopleList({ csvUrl }) {
       {people.map((person, idx) => {
         const key = person.name || `person-${idx}`;
         const isExpanded = !!expanded[key];
-        const shouldTruncate = person.bio && person.bio.length > 100;
+        const shouldTruncate = person.bio && person.bio.length > 350;
         const displayBio = !isExpanded && shouldTruncate
           ? `${person.bio.substring(0, 100)} ... `
           : person.bio;
