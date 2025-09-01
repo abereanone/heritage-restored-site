@@ -4,7 +4,9 @@ const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1ENFxo216pDegcvQ-WOfAJ
 
 export const GET: APIRoute = async () => {
   try {
-    const upstream = await fetch(SHEET_CSV, { redirect: 'follow' });
+    const bust = `_=${Date.now()}`;
+    const url = SHEET_CSV + (SHEET_CSV.includes('?') ? '&' : '?') + bust;
+    const upstream = await fetch(url, { redirect: 'follow', cache: 'no-store' });
     if (!upstream.ok) {
       const text = await upstream.text().catch(() => '');
       return new Response(
@@ -16,8 +18,15 @@ export const GET: APIRoute = async () => {
     return new Response(csv, {
       headers: {
         'Content-Type': 'text/csv; charset=utf-8',
-        // Cache for 1 hour, allow 5 min stale while revalidating
-        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=300',
+
+        // Strong no-cache set covering browsers + most CDNs
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',          // legacy/proxies
+        'Expires': '0',                // legacy
+
+        // CDN-specific knobs many edges honor
+        'Surrogate-Control': 'no-store',     // Fastly/Netlify
+        'CDN-Cache-Control': 'no-store',     // some CDNs
       },
     });
   } catch {

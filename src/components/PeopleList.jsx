@@ -9,12 +9,21 @@ export default function PeopleList({ csvUrl }) {
   useEffect(() => {
     let cancelled = false;
 
-    // check URL param
+    // URL params
     const params = new URLSearchParams(window.location.search);
     const val = (params.get('showall') || '').trim().toLowerCase();
     const showall = val === 'y' || val === 'yes' || val === 'true' || val === '1';
 
-    fetch(csvUrl)
+    // Fresh override (?fresh=1) OR hourly versioning for cached path
+    const wantFresh = (params.get('fresh') || '').trim() === '1';
+    const hourBucket = Math.floor(Date.now() / (60 * 60 * 1000)); // rotates once per hour
+    const versionedUrl = `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}v=${hourBucket}`;
+    const url = wantFresh
+      ? `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}_=${Date.now()}`
+      : versionedUrl;
+    const fetchOpts = wantFresh ? { cache: 'no-store' } : undefined;
+
+    fetch(url, fetchOpts)
       .then(res => res.text())
       .then(csvText => {
         if (cancelled) return;
@@ -31,30 +40,33 @@ export default function PeopleList({ csvUrl }) {
               );
             }
 
-            cleaned = cleaned.map(row => {
-              const priority = parseInt((row.priority ?? '').toString().trim(), 10);
-              return {
-                ...row,
-                name: (row.name ?? '').toString().trim(),
-                role: (row.role ?? '').toString().trim(),
-                bio: (row.bio ?? '').toString().trim(),
-                link_url: (row.link_url ?? '').toString().trim(),
-                link_label: (row.link_label ?? '').toString().trim(),
-                photo_url: (row.photo_url ?? '').toString().trim(),
-                _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER
-              };
-            })
-            .sort((a, b) => a._priority - b._priority);
+            cleaned = cleaned
+              .map(row => {
+                const priority = parseInt((row.priority ?? '').toString().trim(), 10);
+                return {
+                  ...row,
+                  name: (row.name ?? '').toString().trim(),
+                  role: (row.role ?? '').toString().trim(),
+                  bio: (row.bio ?? '').toString().trim(),
+                  link_url: (row.link_url ?? '').toString().trim(),
+                  link_label: (row.link_label ?? '').toString().trim(),
+                  photo_url: (row.photo_url ?? '').toString().trim(),
+                  _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER,
+                };
+              })
+              .sort((a, b) => a._priority - b._priority);
 
             setPeople(cleaned);
             setLoading(false);
           },
-          error: () => setLoading(false)
+          error: () => setLoading(false),
         });
       })
       .catch(() => setLoading(false));
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [csvUrl]);
 
   if (loading) return <div>Loading people now... be patient</div>;
@@ -78,22 +90,26 @@ export default function PeopleList({ csvUrl }) {
               />
             </div>
             {person.name && <h2>{person.name}</h2>}
-            {person.role && <p><strong>{person.role}</strong></p>}
+            {person.role && (
+              <p>
+                <strong>{person.role}</strong>
+              </p>
+            )}
 
             {person.bio && (
               <p>
                 {displayBio}
                 {shouldTruncate && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    setExpanded(prev => ({ ...prev, [key]: !isExpanded }))
-                  }
-                  aria-expanded={isExpanded}
-                  className="inline-link-button"
-                >
-                  {isExpanded ? ' Show less' : ' Read more'}
-                </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setExpanded(prev => ({ ...prev, [key]: !isExpanded }))
+                    }
+                    aria-expanded={isExpanded}
+                    className="inline-link-button"
+                  >
+                    {isExpanded ? ' Show less' : ' Read more'}
+                  </button>
                 )}
               </p>
             )}

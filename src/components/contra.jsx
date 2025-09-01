@@ -11,7 +11,18 @@ export default function Contra({ csvUrl }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(csvUrl)
+
+    // Fresh override via ?fresh=1, otherwise use hourly versioning key
+    const params = new URLSearchParams(window.location.search);
+    const wantFresh = (params.get('fresh') || '').trim() === '1';
+    const hourBucket = Math.floor(Date.now() / (60 * 60 * 1000));
+    const versionedUrl = `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}v=${hourBucket}`;
+    const url = wantFresh
+      ? `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}_=${Date.now()}`
+      : versionedUrl;
+    const fetchOpts = wantFresh ? { cache: 'no-store' } : undefined;
+
+    fetch(url, fetchOpts)
       .then((res) => res.text())
       .then((csvText) => {
         if (cancelled) return;

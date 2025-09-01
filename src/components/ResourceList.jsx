@@ -6,7 +6,16 @@ export default function ResourceList({ csvUrl }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(csvUrl)
+    const params = new URLSearchParams(window.location.search);
+    const wantFresh = (params.get('fresh') || '').trim() === '1';
+    const hourBucket = Math.floor(Date.now() / (60 * 60 * 1000));
+    const versionedUrl = `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}v=${hourBucket}`;
+    const url = wantFresh
+      ? `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}_=${Date.now()}`
+      : versionedUrl;
+    const fetchOpts = wantFresh ? { cache: 'no-store' } : undefined;
+
+    fetch(url, fetchOpts)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.text();
