@@ -1,6 +1,12 @@
 import type { APIRoute } from 'astro';
 
-const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1ENFxo216pDegcvQ-WOfAJW_1VHAJ121-Sg_zTNTC61A/export?format=csv&gid=0';
+// const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1ENFxo216pDegcvQ-WOfAJW_1VHAJ121-Sg_zTNTC61A/export?format=csv&gid=0';
+const SHEET_ID = '1ENFxo216pDegcvQ-WOfAJW_1VHAJ121-Sg_zTNTC61A';
+const SHEET_NAME = 'People'; // <-- the visible tab name in the UI
+
+// GViz CSV is usually fresher than "Publish to web" CSV
+const SHEET_CSV =
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
 export const GET: APIRoute = async () => {
   try {

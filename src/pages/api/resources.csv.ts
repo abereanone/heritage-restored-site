@@ -1,9 +1,12 @@
 import type { APIRoute } from 'astro';
 
-const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/15FtcWRJnF-0-7zWLzbk7NIzcMsbR90zGrLh3v2xMvrU/export?format=csv&gid=0';
-//   'https://docs.google.com/spreadsheets/d/1MvQZvqtHsKNeBpKRtvDNknhDqLOwHfcT0oCgfkVOnGs/export?format=csv&gid=0';
-// If needed later, a drop-in fallback that also returns CSV:
-// 'https://docs.google.com/spreadsheets/d/1MvQZvqtHsKNeBpKRtvDNknhDqLOwHfcT0oCgfkVOnGs/gviz/tq?tqx=out:csv&gid=0';
+// const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/15FtcWRJnF-0-7zWLzbk7NIzcMsbR90zGrLh3v2xMvrU/export?format=csv&gid=0';
+const SHEET_ID = '15FtcWRJnF-0-7zWLzbk7NIzcMsbR90zGrLh3v2xMvrU';
+const SHEET_NAME = 'Links'; // <-- the visible tab name in the UI
+
+// GViz CSV is usually fresher than "Publish to web" CSV
+const SHEET_CSV =
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
 export const GET: APIRoute = async () => {
   try {
