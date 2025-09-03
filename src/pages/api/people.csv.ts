@@ -33,7 +33,9 @@ export const GET: APIRoute = async () => {
         // CDN-specific knobs many edges honor
         'Surrogate-Control': 'no-store',     // Fastly/Netlify
         'CDN-Cache-Control': 'no-store',     // some CDNs
-      },
+        'X-Debug-Build': new Date().toISOString(),
+        'X-Debug-Upstream-Url': url,               // the exact GViz URL (with &_=…)
+        'X-Debug-First-80': csv.slice(0, 80).replace(/\n/g, '\\n'),      },
     });
   } catch {
     return new Response('Proxy error fetching People CSV', { status: 502 });

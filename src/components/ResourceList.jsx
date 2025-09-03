@@ -1,87 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 
-export default function ResourceList({ csvUrl }) {
-  const [columns, setColumns] = useState({ left: [], right: [] });
+function useFreshCsv(csvUrl, transform) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const wantFresh = (params.get('fresh') || '').trim() === '1';
-    const hourBucket = Math.floor(Date.now() / (60 * 60 * 1000));
-    const versionedUrl = `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}v=${hourBucket}`;
-    const url = wantFresh
-      ? `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}_=${Date.now()}`
-      : versionedUrl;
-    const fetchOpts = wantFresh ? { cache: 'no-store' } : undefined;
+    let cancelled = false;
 
-    fetch(url, fetchOpts)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.text();
-      })
-      .then((csvText) => {
-        const { data, errors } = Papa.parse(csvText, {
+    fetch(csvUrl, { cache: 'no-store' })
+      .then(res => res.text())
+      .then(csvText => {
+        if (cancelled) return;
+        Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true,
+          complete: ({ data }) => {
+            setData(transform(data));
+            setLoading(false);
+          },
+          error: () => {
+            setError('CSV parse error');
+            setLoading(false);
+          },
         });
-        if (errors.length) {
-          console.warn(errors);
-          setError('CSV parse error');
-          return;
-        }
-
-        // group by Category
-        const grouped = data.reduce((map, item) => {
-          const cat = item.Category?.trim() || 'Uncategorized';
-          if (!map[cat]) map[cat] = [];
-          map[cat].push(item);
-          return map;
-        }, {});
-
-        // sort within each category
-        Object.values(grouped).forEach((arr) =>
-          arr.sort(
-            (a, b) =>
-              (Number(a['Sort Order']) || 0) -
-              (Number(b['Sort Order']) || 0)
-          )
-        );
-
-        // build an array of [category, links[]]
-        const entries = Object.entries(grouped);
-
-        // compute total number of links
-        const totalLinks = entries.reduce(
-          (sum, [, links]) => sum + links.length,
-          0
-        );
-        const half = totalLinks / 2;
-
-        // split by “weight” (links count)
-        const left = [];
-        const right = [];
-        let acc = 0;
-        for (let [cat, links] of entries) {
-          if (acc < half) {
-            left.push([cat, links]);
-            acc += links.length;
-          } else {
-            right.push([cat, links]);
-          }
-        }
-
-        setColumns({ left, right });
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(err => {
         setError(err.message);
+        setLoading(false);
       });
-  }, [csvUrl]);
+
+    return () => { cancelled = true };
+  }, [csvUrl, transform]);
+
+  return { data, loading, error };
+}
+
+export default function ResourceList({ csvUrl }) {
+  const { data: columns, loading, error } = useFreshCsv(csvUrl, (rows) => {
+    const grouped = rows.reduce((map, item) => {
+      const cat = item.Category?.trim() || 'Uncategorized';
+      if (!map[cat]) map[cat] = [];
+      map[cat].push(item);
+      return map;
+    }, {});
+
+    Object.values(grouped).forEach(arr =>
+      arr.sort((a, b) => (Number(a['Sort Order']) || 0) - (Number(b['Sort Order']) || 0))
+    );
+
+    const entries = Object.entries(grouped);
+    const totalLinks = entries.reduce((sum, [, links]) => sum + links.length, 0);
+    const half = totalLinks / 2;
+
+    const left = [], right = [];
+    let acc = 0;
+    for (let [cat, links] of entries) {
+      if (acc < half) { left.push([cat, links]); acc += links.length }
+      else { right.push([cat, links]) }
+    }
+    return { left, right };
+  });
 
   if (error) return <div style={{ color: 'red' }}>Error: {error}</div>;
-  if (!columns.left.length && !columns.right.length)
-    return <div>Loading resources…</div>;
+  if (loading) return <div>Loading resources…</div>;
 
   return (
     <div className="columns">

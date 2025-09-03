@@ -9,21 +9,12 @@ export default function PeopleList({ csvUrl }) {
   useEffect(() => {
     let cancelled = false;
 
-    // URL params
     const params = new URLSearchParams(window.location.search);
     const val = (params.get('showall') || '').trim().toLowerCase();
     const showall = val === 'y' || val === 'yes' || val === 'true' || val === '1';
 
-    // Fresh override (?fresh=1) OR hourly versioning for cached path
-    const wantFresh = (params.get('fresh') || '').trim() === '1';
-    const hourBucket = Math.floor(Date.now() / (60 * 60 * 1000)); // rotates once per hour
-    const versionedUrl = `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}v=${hourBucket}`;
-    const url = wantFresh
-      ? `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}_=${Date.now()}`
-      : versionedUrl;
-    const fetchOpts = wantFresh ? { cache: 'no-store' } : undefined;
-
-    fetch(url, fetchOpts)
+    // Fetch directly (no cache-buster, let browser handle freshness)
+    fetch(csvUrl, { cache: 'no-store' })
       .then(res => res.text())
       .then(csvText => {
         if (cancelled) return;
@@ -34,7 +25,6 @@ export default function PeopleList({ csvUrl }) {
             let cleaned = data;
 
             if (!showall) {
-              // only filter out "no" rows if showall is not set
               cleaned = cleaned.filter(
                 row => (row.visible ?? '').toString().trim().toLowerCase() !== 'no'
               );

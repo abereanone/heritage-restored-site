@@ -1,86 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 
-/**
- * Contra component: displays contraceptive methods with category and mechanism notes.
- * Expects columns: Method, Category, Notes/Mechanism, visible, sortOrder
- */
-export default function Contra({ csvUrl }) {
-  const [items, setItems] = useState([]);
+function useFreshCsv(csvUrl, transform) {
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
 
-    // Fresh override via ?fresh=1, otherwise use hourly versioning key
-    const params = new URLSearchParams(window.location.search);
-    const wantFresh = (params.get('fresh') || '').trim() === '1';
-    const hourBucket = Math.floor(Date.now() / (60 * 60 * 1000));
-    const versionedUrl = `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}v=${hourBucket}`;
-    const url = wantFresh
-      ? `${csvUrl}${csvUrl.includes('?') ? '&' : '?'}_=${Date.now()}`
-      : versionedUrl;
-    const fetchOpts = wantFresh ? { cache: 'no-store' } : undefined;
-
-    fetch(url, fetchOpts)
-      .then((res) => res.text())
-      .then((csvText) => {
+    fetch(csvUrl, { cache: 'no-store' })
+      .then(res => res.text())
+      .then(csvText => {
         if (cancelled) return;
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true,
           complete: ({ data }) => {
-            // 1) Filter by visibility
-            // 2) Normalize/trim fields
-            // 3) Parse sortOrder to number (fallback to large number when missing)
-            const cleaned = data
-              .filter((row) => (row.visible ?? row.Visible ?? '').toString().trim().toLowerCase() !== 'no')
-              .map((row) => {
-                const sortOrderRaw = row.sortOrder ?? row.SortOrder ?? row.sortorder;
-                const sortOrder = Number.parseInt((sortOrderRaw ?? '').toString().trim(), 10);
-                return {
-                  ...row,
-                  Method: (row.Method ?? '').toString().trim(),
-                  Category: (row.Category ?? '').toString().trim(),
-                  NotesMechanism: (row['Notes/Mechanism'] ?? row['NotesMechanism'] ?? '').toString().trim(),
-                  sortOrder: Number.isFinite(sortOrder) ? sortOrder : Number.MAX_SAFE_INTEGER,
-                };
-              });
-
-            // Multi-level sort:
-            //  - Category: DESCENDING (Z → A)
-            //  - sortOrder: ASCENDING (1 → 999)
-            //  - Method: ASC as a stable tiebreaker
-            cleaned.sort((a, b) => {
-              const aCat = a.Category.toLowerCase();
-              const bCat = b.Category.toLowerCase();
-              if (aCat < bCat) return 1; // desc
-              if (aCat > bCat) return -1; // desc
-              if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder; // asc
-              return a.Method.localeCompare(b.Method); // tiebreaker
-            });
-
-            setItems(cleaned);
+            setData(transform(data));
             setLoading(false);
           },
-          error: (err) => {
-            console.error('Error parsing CSV:', err);
-            setLoading(false);
-          },
+          error: () => setLoading(false),
         });
       })
-      .catch((err) => {
-        console.error('Error loading CSV:', err);
-        setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [csvUrl]);
+      .catch(() => setLoading(false));
 
-  if (loading) {
-    return <div>Loading data... please wait</div>;
-  }
+    return () => { cancelled = true };
+  }, [csvUrl, transform]);
+
+  return { data, loading };
+}
+
+export default function Contra({ csvUrl }) {
+  const { data: items, loading } = useFreshCsv(csvUrl, (rows) => {
+    const cleaned = rows
+      .filter(r => (r.visible ?? r.Visible ?? '').toString().trim().toLowerCase() !== 'no')
+      .map(r => {
+        const raw = r.sortOrder ?? r.SortOrder ?? r.sortorder;
+        const n = Number.parseInt((raw ?? '').toString().trim(), 10);
+        return {
+          ...r,
+          Method: (r.Method ?? '').toString().trim(),
+          Category: (r.Category ?? '').toString().trim(),
+          NotesMechanism: (r['Notes/Mechanism'] ?? r['NotesMechanism'] ?? '').toString().trim(),
+          sortOrder: Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER,
+        };
+      });
+
+    cleaned.sort((a, b) => {
+      const aCat = a.Category.toLowerCase();
+      const bCat = b.Category.toLowerCase();
+      if (aCat < bCat) return 1;
+      if (aCat > bCat) return -1;
+      if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+      return a.Method.localeCompare(b.Method);
+    });
+    return cleaned;
+  });
+
+  if (loading) return <div>Loading data... please wait</div>;
 
   return (
     <div className="contra-grid">
@@ -91,9 +68,7 @@ export default function Contra({ csvUrl }) {
             <h2>{item.Method}</h2>
             <h2>{item.Category}</h2>
             {item.NotesMechanism && (
-              <p>
-                <strong>Mechanism:</strong> {item.NotesMechanism}
-              </p>
+              <p><strong>Mechanism:</strong> {item.NotesMechanism}</p>
             )}
           </div>
         );
