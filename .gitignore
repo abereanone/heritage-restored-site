@@ -4,3 +4,4 @@ dist
 .DS_Store
 # ignore Astro’s local build cache
 /.astro/
+/flutter
