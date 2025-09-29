@@ -269,3 +269,55 @@ blockquote footer {font-style: italic; opacity: .8; margin-top: .5rem;}
   opacity: 1;
   transform: translateX(-10px);
 }
+
+.qa-item {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--photo-bg); /* was #fafafa */
+  color: var(--text-color);
+}
+
+.qa-question {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.qa-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* one column on small screens */
+  gap: 1rem;
+}
+
+.qa-answer {
+  padding: 1rem;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Subtle differences */
+.qa-answer.plm {
+  background: linear-gradient(
+    to bottom right,
+    rgba(67, 147, 228, 0.08),
+    var(--bg-color)
+  );
+}
+
+.qa-answer.abo {
+  background: linear-gradient(
+    to bottom right,
+    rgba(144, 238, 144, 0.08),
+    var(--bg-color)
+  );
+}
+
+/* Side by side on wider screens */
+@media (min-width: 768px) {
+  .qa-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

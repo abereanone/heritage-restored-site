@@ -1,4 +1,4 @@
-$folder = "C:\temp\mc1234\heritage-restored-site\dist"
+$folder = "C:\Users\mac\Proton Drive\abereanone\My files\code\heritage-restored-site\dist"
 $zipPath = Join-Path $folder "dist.zip"
 
 # Remove existing zip file if it exists
