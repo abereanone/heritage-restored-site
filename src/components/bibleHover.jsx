@@ -28,9 +28,30 @@ export default function BibleHover() {
         // Position tooltip
         function positionTooltip() {
           const rect = el.getBoundingClientRect();
+
+          // Make sure we can measure the tooltip
+          tooltip.style.visibility = "hidden";
+          tooltip.style.display = "block";
+
+          const tooltipWidth = tooltip.offsetWidth;
+          const viewportWidth = window.innerWidth;
+
+          // Hide again until we decide to show
+          tooltip.style.display = "none";
+          tooltip.style.visibility = "visible";
+
+          let left = rect.left + window.scrollX;
+          if (left + tooltipWidth > viewportWidth - 10) {
+            left = viewportWidth - tooltipWidth - 10;
+          }
+          if (left < 10) {
+            left = 10; // keep some padding on the left side too
+          }
+
           tooltip.style.top = `${rect.bottom + window.scrollY + 6}px`;
-          tooltip.style.left = `${rect.left + window.scrollX}px`;
+          tooltip.style.left = `${left}px`;
         }
+
         positionTooltip();
 
         // Save reference so we don’t recreate
