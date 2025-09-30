@@ -2,26 +2,41 @@
 import Layout from "../layouts/layout.astro";
 import qaData from "../components/qa_data.json";
 
-const title = "These AI generated answers to common questions highlight some key distinctions in the prolife and abolitionist mindsets. See for yourself which one respects true victims and adheres to biblical principles.";
+const title =
+  "These AI generated answers to common questions highlight some key distinctions in the prolife and abolitionist mindsets. See for yourself which one respects true victims and adheres to biblical principles.";
 ---
 
 <Layout {title}>
   <h1>{title}</h1>
-  <p>Pro-Life answer was retrieved using the AI bot trained at https://www.embracegrace.com/</p>
-  <p>The Abolitionist position was fetched using <a href="https://chatgpt.com/g/g-68c9835ac6bc819182c9f7dc31bad372-the-abolitionist-voice" target="_blank" rel="noopener noreferrer">The Abolitionist Voice GPT.</a> Feel free to ask this GPT any question!</p>
+  <p>
+    Pro-Life answer was retrieved using the AI bot trained at
+    https://www.embracegrace.com/
+  </p>
+  <p>
+    The Abolitionist position was fetched using{" "}
+    <a
+      href="https://chatgpt.com/g/g-68c9835ac6bc819182c9f7dc31bad372-the-abolitionist-voice"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      The Abolitionist Voice GPT.
+    </a>{" "}
+    Feel free to ask this GPT any question!
+  </p>
+
   {qaData.map((item) => (
     <div class="qa-item">
       <h2 class="qa-question">Q: {item.question}</h2>
-        <div class="qa-grid">
+      <div class="qa-grid">
         <div class="qa-answer plm">
-            <h3>PLM Answer</h3>
-            <p>{item.answer_plm}</p>
+          <h3>PLM Answer</h3>
+          <div set:html={item.answer_plm}></div>
         </div>
         <div class="qa-answer abo">
-            <h3>ABO Answer</h3>
-            <p>{item.answer_abo || "Coming soon..."}</p>
+          <h3>ABO Answer</h3>
+          <div set:html={item.answer_abo || "Coming soon..."}></div>
         </div>
-        </div>
+      </div>
     </div>
   ))}
 </Layout>

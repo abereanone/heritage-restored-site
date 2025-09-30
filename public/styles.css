@@ -321,3 +321,45 @@ blockquote footer {font-style: italic; opacity: .8; margin-top: .5rem;}
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.bible-tooltip {
+  display: none;
+  position: absolute;
+  background: var(--tooltip-bg, #222);
+  color: var(--tooltip-color, #fff);
+  padding: 8px 12px;
+  border-radius: 6px;
+  min-width: 250px;
+  max-width: 500px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  white-space: normal;
+  z-index: 1000;
+  
+  border: 1px solid rgba(255, 255, 255, 0.25); /* subtle in dark mode */
+}
+
+/* Default (light mode) */
+.bible-ref {
+  cursor: pointer;
+  color: #0056b3;                 /* link-like blue */
+  border-bottom: 1px dotted currentColor;
+  transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+.bible-ref:hover {
+  color: #d63384;                 /* pink accent on hover */
+  border-bottom-style: solid;
+}
+
+/* Dark mode */
+.dark-mode .bible-ref {
+  color: #66b2ff;                 /* lighter blue for dark backgrounds */
+  border-bottom: 1px dotted currentColor;
+}
+
+.dark-mode .bible-ref:hover {
+  color: #ff7ab8;                 /* brighter pink accent */
+  border-bottom-style: solid;
+}

@@ -1,5 +1,12 @@
 ---
+import BibleHover from "../components/BibleHover.jsx";
+import { autoLinkBibleRefs } from "../utils/autoLinkBibleRefs.js";
+
 const { title } = Astro.props;
+
+// Capture all slot content and auto-link Bible refs
+const raw = Astro.slots.default ? await Astro.slots.render("default") : "";
+const processed = autoLinkBibleRefs(raw);
 ---
 
 <html class="theme-root">
@@ -19,14 +26,13 @@ const { title } = Astro.props;
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-M5J5WYS3VJ');
     </script>
     <link rel="stylesheet" href="/styles.css" />
     <!-- Theme variables and dark-mode styles -->
   </head>
   <body id="top">
-    <header>
+        <header>
       <button id="theme-toggle" class="theme-toggle-button">Dark Mode</button>
       <div class="logo-container">
         <a href="/">
@@ -59,9 +65,13 @@ const { title } = Astro.props;
         </div>
       </nav>
     </header>
+
+
     <main>
-      <slot />
+      <!-- ✅ Processed content with auto-linked refs -->
+      <div set:html={processed}></div>
     </main>
+
     <footer>
       <p>At Heritage Restored, all our work is dedicated to the public domain. EIN 39-3248627</p>
     </footer>
@@ -105,5 +115,8 @@ const { title } = Astro.props;
         });
       });
     </script>
+
+
+    <BibleHover client:load />
   </body>
 </html>
