@@ -7,7 +7,10 @@ export async function GET() {
     "1 John 3:16",
     "Psalm 23:1-2",
     "2 Cor 5:17",
-    "Genesis 1:1"
+    "Genesis 1:1",
+    "Jn 4:24",
+    "Jude 1:7",
+    "Jude 7"
   ];
 
   const results = [];
