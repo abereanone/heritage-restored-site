@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 
-export default function PeopleList({ csvUrl }) {
+export default function PeopleList({ csvUrl, filterNames, hideBio = false, className = '' }) {
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState({});
+  const filterKey = Array.isArray(filterNames) ? JSON.stringify(filterNames) : '';
 
   useEffect(() => {
     let cancelled = false;
@@ -46,6 +47,18 @@ export default function PeopleList({ csvUrl }) {
               })
               .sort((a, b) => a._priority - b._priority);
 
+            if (filterKey) {
+              const allowedNames = JSON.parse(filterKey);
+              const allowed = new Set(
+                allowedNames
+                  .map(name => (name ?? '').toString().trim())
+                  .filter(Boolean)
+              );
+              if (allowed.size) {
+                cleaned = cleaned.filter(person => allowed.has(person.name));
+              }
+            }
+
             setPeople(cleaned);
             setLoading(false);
           },
@@ -57,12 +70,14 @@ export default function PeopleList({ csvUrl }) {
     return () => {
       cancelled = true;
     };
-  }, [csvUrl]);
+  }, [csvUrl, filterKey]);
 
   if (loading) return <div>Loading people now... be patient</div>;
 
+  const gridClass = ['people-grid', className].filter(Boolean).join(' ');
+
   return (
-    <div className="people-grid">
+    <div className={gridClass}>
       {people.map((person, idx) => {
         const key = person.name || `person-${idx}`;
         const isExpanded = !!expanded[key];
@@ -70,6 +85,7 @@ export default function PeopleList({ csvUrl }) {
         const displayBio = !isExpanded && shouldTruncate
           ? `${person.bio.substring(0, 100)} ... `
           : person.bio;
+        const showBio = Boolean(person.bio) && !hideBio;
 
         return (
           <div className="person-card" key={key}>
@@ -86,8 +102,8 @@ export default function PeopleList({ csvUrl }) {
               </p>
             )}
 
-            {person.bio && (
-              <p>
+            {showBio && (
+              <p className="person-bio">
                 {displayBio}
                 {shouldTruncate && (
                   <button

@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PeopleList from '../components/PeopleList.jsx';
+
+const peopleUrl = '/api/people.csv';
+const featuredSpeakers = ['Logan Ramsey', 'Elijah Thompson', 'Michael Coughlin'];
+
+---
+
+<Layout title="Abolitionist Fellowship Conference & Mission">
+  <article>
+    <h1>Abolitionist Fellowship Conference & Mission</h1>
+    <p>
+      Heritage Restored is hosting our Abolitionist Fellowship Conference on Jan 24, 2026 so we can
+      have a ton of fellowship, hear from the Word, pray, and encourage one another in the work of abolition. 
+     </p>
+    <section>
+      <h2>When &amp; Where</h2>
+      <p>
+        <strong>Date:</strong> Friday, January 24<br />
+        <strong>Time:</strong> 11:00 AM &ndash; 3:00 PM 
+        <strong>What:</strong>Fellowship Conference<br />
+        <strong>Location:</strong> The Village Church, 3750 Sullivant Ave, Columbus, OH 43228<br />
+        <strong>Cost to attend:</strong> FREE<br />
+        <strong>Mission:</strong> Street evangelism at WinterJam 4-6pm. (You may be contacted by a member of Heritage Restored to confirm your participation and agreement to our rules of engagement on the street)
+      </p>
+    </section>
+
+    <section>
+      <h2>Itinerary</h2>
+      <ul>
+        <li>Be encouraged by the Word and by abolitionist brothers and sisters who are walking the same road.</li>
+        <li>Share lunch and intentional fellowship, even if you aren't planning to go on the mission!</li>
+        <li>Pray together for the mission and each other and other ministries.</li>
+        <li>Possible DEBATE!</li>
+        <li>MORE DETAILS TO BE ADDED!</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Featured Speakers</h2>
+      <div class="conference-speakers">
+        <PeopleList
+          client:load
+          csvUrl={peopleUrl}
+          filterNames={featuredSpeakers}
+          hideBio
+          className="speaker-spotlight"
+        />
+      </div>
+    </section>
+
+    <section>
+      <h2>Mission at WinterJam</h2>
+      <p>
+        After the conference, anyone still in Columbus is invited to meet outside the Schottenstein Center for street
+        ministry and conversational outreach during WinterJam. You are welcome to come only for the mission, only for
+        the fellowship, or for both. We will send a short briefing as we get closer to the date.
+      </p>
+    </section>
+
+    <section>
+      <h2>Lightning-Testimony Invitations</h2>
+      <p>
+        Heritage Restored loves to hear how Christ is working through this ministry. If you have a testimony to share, let
+        us know when you register&mdash;there will be a lightning-talk slot where volunteers can briefly speak about how Heritage
+        Restored has impacted their walk with Christ.
+      </p>
+    </section>
+
+    <section>
+      <h2>Giving &amp; Support (No obligation)</h2>
+      <p>
+        The conference is truly free to you, but there are costs involved. if you'd like to help underwrite the costs, you can give via our <a href="/donate">donation page</a>, or feel free to offer to fund goodies or snacks when registering.
+      </p>
+    </section>
+
+    <section id="registration">
+      <h2>Register</h2>
+      <p>
+        This gathering is free for everyone, but we ask you to register ahead of time so we can plan food,
+        seating, and any needs for the mission portion. You may be contacted by a member of Heritage Restored to confirm your participation and agreement to our rules of engagement on the street.
+      </p>
+      <div class="form-embed">
+        <iframe
+          src="https://docs.google.com/forms/d/e/1FAIpQLSdZAGqTBUzfLCkT4mEH6M6xJKemvFSNoDvNJ1JutcH5_4Jzag/viewform?embedded=true"
+          width="940"
+          height="2420"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+          title="Abolitionist Fellowship Conference Registration"
+        >
+          Loading…
+        </iframe>
+      </div>
+    </section>
+    <section>
+      <h2>Lodging</h2>
+      <p>We are not offering lodging assistance at this time.</p>
+    </section>
+    <p class="back-to-top"><a href="#top">Back to top</a></p>
+  </article>
+</Layout>
