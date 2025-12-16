@@ -2,7 +2,25 @@
 import BibleHover from "../components/BibleHover.jsx";
 import { autoLinkBibleRefs } from "../utils/autoLinkBibleRefs.js";
 
-const { title } = Astro.props;
+const siteName = "Heritage Restored";
+const {
+  title,
+  description: propDescription,
+  image: propImage,
+} = Astro.props;
+
+const baseDescription =
+  "Heritage Restored equips pro-life Christians with theology, witness, and community resources centered on love-driven abolition.";
+const pageTitle = title ? `${title} | ${siteName}` : siteName;
+const metaDescription = propDescription ?? baseDescription;
+const baseImage = propImage ?? "/HRLOGO.png";
+
+const origin = Astro.url.origin ?? "";
+const baseUrl = Astro.site ?? origin;
+const canonicalHref = baseUrl
+  ? new URL(Astro.url.pathname, baseUrl).href
+  : Astro.url.href;
+const metaImageUrl = baseUrl ? new URL(baseImage, baseUrl).href : baseImage;
 
 // Capture all slot content and auto-link Bible refs
 const raw = Astro.slots.default ? await Astro.slots.render("default") : "";
@@ -11,7 +29,7 @@ const processed = autoLinkBibleRefs(raw);
 
 <html class="theme-root">
   <head>
-    <title>{title} | Heritage Restored</title>
+    <title>{pageTitle}</title>
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -20,6 +38,18 @@ const processed = autoLinkBibleRefs(raw);
     <link rel="manifest" href="/site.webmanifest" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonicalHref} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalHref} />
+    <meta property="og:image" content={metaImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={metaImageUrl} />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M5J5WYS3VJ"></script>
     <script>
