@@ -3,6 +3,7 @@ import react from '@astrojs/react';
 
 export default defineConfig({
   integrations: [
-    react(),     // ← add this line
+    react(),
   ],
+  site: 'https://heritagerestored.org',
 });

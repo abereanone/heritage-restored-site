@@ -1,10 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import PeopleList from '../components/PeopleList.jsx';
-
-const peopleUrl = '/api/people.csv';
-const featuredSpeakers = ['Logan Ramsey', 'Elijah Thompson', 'Michael Coughlin'];
-
 ---
 
 <Layout title="Abolitionist Fellowship Conference & Mission">
@@ -12,13 +7,13 @@ const featuredSpeakers = ['Logan Ramsey', 'Elijah Thompson', 'Michael Coughlin']
     <h1>Abolitionist Fellowship Conference & Mission</h1>
     <p>
       Heritage Restored is hosting our Abolitionist Fellowship Conference on Jan 24, 2026 so we can
-      have a ton of fellowship, hear from the Word, pray, and encourage one another in the work of abolition. 
+      have a ton of fellowship, hear from the Word, pray, and encourage one another in the work of abolition. Over half the conference time is fellowship!
      </p>
     <section>
       <h2>When &amp; Where</h2>
       <p>
-        <strong>Date:</strong> Saturday, January 24, 2026<br />
-        <strong>Time:</strong> 11:00 AM &ndash; 3:00 PM 
+        <strong>Date:</strong> Saturday, January 24, 2026 | 
+        <strong>Time:</strong> 11:00 AM &ndash; 3:00 PM <br />
         <strong>What:</strong>Fellowship Conference<br />
         <strong>Location:</strong> The Village Church, 3750 Sullivant Ave, Columbus, OH 43228<br />
         <strong>Cost to attend:</strong> FREE<br />
@@ -27,26 +22,104 @@ const featuredSpeakers = ['Logan Ramsey', 'Elijah Thompson', 'Michael Coughlin']
     </section>
 
     <section>
-      <h2>Itinerary</h2>
-      <ul>
-        <li>Be encouraged by the Word and by abolitionist brothers and sisters who are walking the same road.</li>
-        <li>Share lunch and intentional fellowship, even if you aren't planning to go on the mission!</li>
-        <li>Pray together for the mission and each other and other ministries.</li>
-        <li>Possible DEBATE!</li>
-        <li>MORE DETAILS TO BE ADDED!</li>
-      </ul>
+      <h2>Conference Schedule (11:00 AM &ndash; 3:00 PM)</h2>
+
+      <div class="schedule-grid">
+        <div class="schedule-block">
+          <h3>10:30 AM &ndash; 11:00 AM</h3>
+          <ul>
+            <li>
+              <strong>Arrival, Setup, &amp; Check-In</strong>
+            </li>
+          </ul>
+        </div>
+
+        <div class="schedule-block">
+          <h3>11:00 AM &ndash; 12:00 PM | Opening Session</h3>
+          <ul>
+            <li>
+              <strong>11:00 | Welcome &amp; Introductions</strong><br />
+            </li>
+            <li>
+              <strong>Plenary Session 1 - Logan Ramsey</strong><br />
+            </li>
+            <li>
+              <strong>Plenary Session 2 - Elijah Thompson</strong><br />
+            </li>
+          </ul>
+        </div>
+
+        <div class="schedule-block">
+          <h3>12:00 PM &ndash; 1:00 PM | Lunch &amp; Fellowship</h3>
+         </div>
+
+        <div class="schedule-block">
+          <h3>1:00 PM &ndash; 2:00 PM | Mission Preparation Session</h3>
+          <ul>
+            <li>
+              <strong>Plenary Session 3 - Michael Coughlin</strong><br />
+            </li>
+            <li>
+              <strong>Mission Preparation &amp; Prayer</strong>
+            </li>
+          </ul>
+        </div>
+
+        <div class="schedule-block">
+          <h3>2:00 PM &ndash; 3:00 PM | Fellowship &amp; Clean-Up</h3>
+          <ul>
+            <li><strong>Continued fellowship</strong></li>
+            <li><strong>Venue clean-up and closing conversations</strong></li>
+          </ul>
+        </div>
+
+        <div class="schedule-block">
+          <h3>3:00 PM Depart for Mission to WinterJam</h3>
+        </div>
+
+      </div>
     </section>
 
     <section>
       <h2>Featured Speakers</h2>
-      <div class="conference-speakers">
-        <PeopleList
-          client:load
-          csvUrl={peopleUrl}
-          filterNames={featuredSpeakers}
-          hideBio
-          className="speaker-spotlight"
-        />
+      <div class="people-grid conference-speakers">
+        <div class="person-card">
+          <div class="person-photo">
+            <img src="/loganramsey.jpg" alt="Pastor Logan J. Ramsey" />
+          </div>
+          <h2>Session 1</h2>
+          <p><strong>Pastor Logan J. Ramsey</strong></p>
+          <p class="person-bio">
+            <strong>"The Power for Change"</strong><br />
+            <strong></strong> Romans 1:16 - God's sovereign grace in salvation means that when we are
+            regenerated, our lives are changed on earth. That transformation necessarily leads to faithful work,
+            including abolition.
+          </p>
+        </div>
+
+        <div class="person-card">
+          <div class="person-photo">
+            <img src="/elijahthompson.jpg" alt="Elijah Thompson" />
+          </div>
+          <h2>Session 2</h2>
+          <p><strong>Elijah Thompson</strong></p>
+          <p class="person-bio">
+            <strong>"Tent-Making Abolitionists"</strong><br />
+            <strong></strong> How to effectively work for abolition while not being able to dedicate yourself to full-time ministry.
+          </p>
+        </div>
+
+        <div class="person-card">
+          <div class="person-photo">
+            <img src="/michaelcoughlin.jpg" alt="Michael Coughlin" />
+          </div>
+          <h2>Session 3</h2>
+          <p><strong>Michael Coughlin</strong></p>
+          <p class="person-bio">
+            <strong>"Loving H8Rs"</strong><br />
+            <strong></strong> How to respond biblically and effectively to those who oppose you. Defend the voiceless without compromising your personal holiness.
+          </p>
+        </div>
       </div>
     </section>
 
