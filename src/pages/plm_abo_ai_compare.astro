@@ -2,12 +2,14 @@
 import Layout from "../layouts/layout.astro";
 import qaData from "../components/qa_data.json";
 
-const title =
+const subtitle =
   "These AI generated answers to common questions highlight some key distinctions in the prolife and abolitionist mindsets. See for yourself which one respects true victims and adheres to biblical principles.";
+const title = "Pro-Life™ vs Abolitionism";
 ---
 
 <Layout {title}>
   <h1>{title}</h1>
+  <p class="lede">{subtitle}</p>
   <p>
     Pro-Life answer was retrieved using the AI bot trained at
     https://www.embracegrace.com/

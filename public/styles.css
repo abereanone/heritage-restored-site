@@ -12,6 +12,8 @@
   --link-light-h: #002266;
   --link-dark: #ADD8E6;
   --link-dark-h: #ffffff;
+  --body-font: "Trebuchet MS", "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --heading-font: "Trebuchet MS", "Aptos Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 html.dark-mode {
   --bg-color: #111;
@@ -23,24 +25,35 @@ html.dark-mode {
 }
 
 body {
-  font-family: system-ui, sans-serif;
+  font-family: var(--body-font);
   margin: 0;
   padding: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-size: 17px;
+  font-size: clamp(18px, 1rem + 0.3vw, 20px);
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 .form-embed {
+  position: relative;
+  overflow: hidden;
   margin: 1.5rem 0;
   max-width: 1000px;
+  min-height: 600px;
 }
 
 .form-embed iframe {
+  position: absolute;
   width: 100%;
-  min-height: 600px;
+  height: 100%;
   border-radius: 8px;
   border: 1px solid var(--card-border);
+}
+
+.donate-embed {
+  min-height: 600px;
 }
 
 a {
@@ -66,6 +79,30 @@ header, footer {
   padding: 1rem;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--heading-font);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: clamp(2rem, 1.7rem + 1.4vw, 3rem);
+  margin-bottom: 0.75rem;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2.2rem);
+}
+
+h3 {
+  font-size: clamp(1.2rem, 1.1rem + 0.45vw, 1.55rem);
+}
+
+p, li {
+  font-size: 1rem;
+}
+
 header a,
 header nav a,
 footer a { color: #fff; }
@@ -77,10 +114,10 @@ footer a:hover { color: #ddd; }
 .logo-container .site-logo { max-height: 120px; width: auto; display: block; margin: 0 auto; }
 
 nav { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; }
-nav a { margin: 0.5rem; }
+nav a { margin: 0.5rem; font-size: 1rem; letter-spacing: 0.01em; }
 
 /* ==== Main Content ==== */
-main { padding: 1rem; }
+main { padding: 1.25rem; }
 
 /* ==== Social Icons ==== */
 .social a { margin-left: 0.5rem; font-size: 1.3rem; display: inline-flex; align-items: center; }
@@ -213,7 +250,7 @@ html.dark-mode .contra-card { color: #000; }
     max-width: 100%;
   }
 }
-article {max-width: clamp(60ch, 92vw, 160ch); margin: 0 auto; padding: 2rem 1rem 4rem;}
+article {max-width: clamp(62ch, 90vw, 110ch); margin: 0 auto; padding: 2.5rem 1.25rem 4rem;}
 header h1 {margin-bottom: .25rem;}
 .lede {opacity: .8; margin-top: 0;}
 .toc {
