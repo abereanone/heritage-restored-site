@@ -5,3 +5,4 @@ dist
 # ignore Astro’s local build cache
 /.astro/
 /flutter
+src/generated/bible-cited.json

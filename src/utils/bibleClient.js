@@ -1,37 +1,66 @@
-export async function getVerse(ref) {
-  // Parse reference: e.g. "1jn 3:16" → book=1jn, chapter=3, verse=16
-  const [bookPart, chapAndVerses] = ref.split(" ");
-  const [chapter, versePart] = chapAndVerses.split(":");
-  const [verseStart, verseEnd] = versePart.split("-").map(v => parseInt(v, 10));
+﻿export const BIBLE_ABBREVIATION = "BSB";
+const referenceCache = new Map();
+let bibleLookupPromise = null;
 
-  // Use BSB translation (Fetch.Bible manual API)
-  const bibleId = "eng_bsb";
-  const url = `https://v1.fetch.bible/bibles/${bibleId}/txt/${bookPart}.json`;
-  const res = await fetch(url);
-  const data = await res.json();
+function normalizeLookupKey(reference) {
+  return String(reference ?? "")
+    .trim()
+    .replace(/\|.*$/g, "")
+    .replace(/(\d+)\s+and\s+(\d+)/gi, "$1, $2")
+    .toLowerCase()
+    .replace(/\u2013|\u2014/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-  const verses = [];
-  for (let v = verseStart; v <= (verseEnd || verseStart); v++) {
-    const chapterIdx = parseInt(chapter, 10);
-    const verseIdx = parseInt(v, 10);
-    const pieces = data.contents?.[chapterIdx]?.[verseIdx] || [];
-
-    const verseText = pieces
-      .map(piece => {
-        if (typeof piece === "string") return piece;
-        if (piece.type === "note" || piece.type === "heading") return "";
-        return piece.contents || "";
-      })
-      .join("")
-      .trim();
-
-    if (verseText) {
-      verses.push(`${v} ${verseText}`);
-    }
+function toVerseData(entry) {
+  if (typeof entry === "string") {
+    const text = entry.trim();
+    return text ? { text, version: BIBLE_ABBREVIATION } : null;
   }
 
-  // console.log("=== RAW API DATA for", url, "===");
-  // console.log(JSON.stringify(data, null, 2).slice(0, 2000)); // first 2k chars
+  if (!entry || typeof entry !== "object" || typeof entry.text !== "string") {
+    return null;
+  }
 
-  return verses.join(" ");
+  const text = entry.text.trim();
+  if (!text) {
+    return null;
+  }
+
+  const rawVersion = typeof entry.version === "string" ? entry.version.trim() : "";
+  const version = rawVersion || BIBLE_ABBREVIATION;
+
+  return { text, version };
+}
+
+async function getBibleLookup() {
+  if (!bibleLookupPromise) {
+    bibleLookupPromise = import("../generated/bible-cited.json")
+      .then((module) => {
+        const data = module.default ?? {};
+        return new Map(Object.entries(data.verses ?? {}));
+      })
+      .catch(() => new Map());
+  }
+
+  return bibleLookupPromise;
+}
+
+export async function getVerseData(rawReference) {
+  const normalizedReference = normalizeLookupKey(rawReference);
+
+  if (referenceCache.has(normalizedReference)) {
+    return referenceCache.get(normalizedReference);
+  }
+
+  const bibleLookup = await getBibleLookup();
+  const verseData = toVerseData(bibleLookup.get(normalizedReference));
+  referenceCache.set(normalizedReference, verseData);
+  return verseData;
+}
+
+export async function getVerse(rawReference) {
+  const verseData = await getVerseData(rawReference);
+  return verseData?.text ?? "";
 }

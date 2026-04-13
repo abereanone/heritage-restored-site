@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "build:bible": "node ./scripts/build-bible-cited.mjs",
+    "seed:bsb": "node ./bsb-data-pipeline/scripts/prepare-bsb.mjs",
+    "predev": "npm run build:bible",
+    "prebuild": "npm run build:bible"
   },
   "dependencies": {
     "18": "^0.0.0",
