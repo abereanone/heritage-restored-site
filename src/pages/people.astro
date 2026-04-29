@@ -1,16 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import PeopleList from '../components/PeopleList.jsx'
-
-// Replace with your published Google Sheet CSV URL
-const peopleUrl = '/api/people.csv';
+import people from '../data/people.json';
 
 ---
 
 <Layout title="People">
   <article>
     <h1>Our People</h1>
-    <PeopleList client:load csvUrl={peopleUrl} />
+    <PeopleList client:load people={people} />
     <p class="back-to-top"><a href="#top">↑ Back to top</a></p>
   </article>
 </Layout>

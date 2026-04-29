@@ -44,8 +44,8 @@ const singleVerseRegex = new RegExp(
 const chapterOnlyRegex = new RegExp(`\\b(${bookPattern})\\s+(\\d+)\\b(?!\\s*:)`, "gi");
 const continuedVerseRegex = /([;]\s*)(\d+:\d+(?:[-\u2013\u2014]\d+)?)(?=(?:\s*[;),.]|\s*$))/g;
 
-export function autoLinkBibleRefs(html) {
-  const withChapterOnly = html.replace(chapterOnlyRegex, (match, book, chapter) => {
+function linkBibleRefsText(text) {
+  const withChapterOnly = text.replace(chapterOnlyRegex, (match, book, chapter) => {
     const normalizedBook = String(book).toLowerCase().replace(/\./g, "");
     if (singleChapterBooks.has(normalizedBook)) {
       return match;
@@ -144,4 +144,40 @@ export function autoLinkBibleRefs(html) {
     const idx = Number(index);
     return Number.isNaN(idx) ? match : placeholders[idx] ?? match;
   });
+}
+
+export function autoLinkBibleRefs(html) {
+  const parts = html.split(/(<[^>]+>)/g);
+  const skippedTags = new Set(["astro-island", "script", "style"]);
+  const stack = [];
+
+  return parts
+    .map((part) => {
+      if (!part) {
+        return part;
+      }
+
+      if (part.startsWith("<")) {
+        const closing = part.match(/^<\/\s*([a-zA-Z0-9-]+)/);
+        const opening = part.match(/^<\s*([a-zA-Z0-9-]+)/);
+
+        if (closing) {
+          const tag = closing[1].toLowerCase();
+          const index = stack.lastIndexOf(tag);
+          if (index !== -1) {
+            stack.splice(index, 1);
+          }
+        } else if (opening && !part.endsWith("/>")) {
+          const tag = opening[1].toLowerCase();
+          if (skippedTags.has(tag)) {
+            stack.push(tag);
+          }
+        }
+
+        return part;
+      }
+
+      return stack.length ? part : linkBibleRefsText(part);
+    })
+    .join("");
 }

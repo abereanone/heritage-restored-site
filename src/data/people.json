@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Elijah Thompson",
+    "role": "President, Director",
+    "category": "Volunteer",
+    "bio": "Elijah is husband to Lauren and a father of 3 living in central Ohio and serving the Lord through abortion abolition since 2020 both at clinics and through street evangelism and activism.",
+    "photo_url": "elijahthompson2.jpg",
+    "priority": "5",
+    "visible": "yes",
+    "link_url": "https://x.com/ElijahMarkT",
+    "link_label": "Elijah's X"
+  },
+  {
+    "name": "Michael Coughlin",
+    "role": "Board Member",
+    "category": "Volunteer",
+    "bio": "Michael is a particular baptist in Ohio—a former pastor who serves Christ's Church through evangelism, preaching, and writing. He lives with his wife, Erin, their two youngest boys, and is active in abortion abolition work, evangelism, preaching, and the local church. One of his favorite verses is Gal 2:20.",
+    "photo_url": "michaelcoughlin.jpg",
+    "priority": "10",
+    "visible": "yes",
+    "link_url": "https://michaelcoughlin.net",
+    "link_label": "Michael's Site"
+  },
+  {
+    "name": "Evan Goubeaux",
+    "role": "Editor",
+    "category": "volunteer",
+    "bio": "Evan is husband to Whitney, and father of 3 living in west-central Ohio. He is the co-founder of Shelby County Ohio Abolitionists and now partners with Heritage Restored to advance the gospel and truth through content creation on various platforms. He also serves as a County Captain for End Abortion Ohio.",
+    "photo_url": "evang.jpg",
+    "priority": "30",
+    "visible": "yes",
+    "link_url": "https://www.facebook.com/egoubeaux92/",
+    "link_label": "Evan's Facebook"
+  },
+  {
+    "name": "Jay Harrod",
+    "role": "On Screen Talent",
+    "category": "Volunteer",
+    "bio": "Yellow shorts copier",
+    "photo_url": "",
+    "priority": "25",
+    "visible": "no",
+    "link_url": "https://ThingsAbove.Us",
+    "link_label": "Jay's Blog"
+  },
+  {
+    "name": "Sam Riley",
+    "role": "Board Member",
+    "category": "Volunteer",
+    "bio": "Sam Riley is as the Media Director at Abolitionists Rising and HR board member.",
+    "photo_url": "samriley.jpg",
+    "priority": "20",
+    "visible": "yes",
+    "link_url": "https://abolitionistsrising.com",
+    "link_label": "Abolitionists Rising"
+  },
+  {
+    "name": "Logan Ramsey",
+    "role": "Board Member",
+    "category": "Volunteer",
+    "bio": "Writer on topics ranging from theology and apologetics to ethics\r\nand cultural issues. Author of such books as 'A Christian Manifesto: A\r\nPractical Exposition of the Beatitudes' and 'Slavery and the Bible'.\r\nStreet apologist and board member for Heritage Restored.",
+    "photo_url": "loganramsey.jpg",
+    "priority": "15",
+    "visible": "yes",
+    "link_url": "https://substack.com/@loganjosephramsey",
+    "link_label": "Logan's Substack"
+  }
+]

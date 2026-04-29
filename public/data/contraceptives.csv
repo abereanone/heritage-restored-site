@@ -1,0 +1,18 @@
+Method,Category,Notes/Mechanism,visible,sortOrder
+Implant (Nexplanon),Abortifacient,Strongly prevents implantation.,yes,60
+Injection (Depo-Provera),Abortifacient,Progestin shot; alters mucus & uterine lining.,yes,50
+"IUDs (Copper, Hormonal, Steel)",Abortifacient,Induce inflammatory uterine environment; prevent implantation.,yes,40
+Patch,Abortifacient,Releases estrogen & progestin; uses all 3 abortive mechanisms.,yes,30
+Vaginal Ring (NuvaRing),Abortifacient,Releases hormones; primarily prevents implantation.,yes,20
+Combination Oral Pill (The Pill),Abortifacient,"Prevents ovulation, alters mucus, thins uterine lining (mechanisms 1–3).",yes,10
+"Emergency IUDs (Copper-T, Mirena/Liletta)",Abortive,Inserted post-fertilization to expel embryo.,yes,70
+"Emergency Pills (Plan B, LNG-EC)",Abortive,Taken within 72 hours; activates all 3 mechanisms.,yes,60
+Methotrexate + Misoprostol,Abortive,Toxic to embryo; also used for ectopic pregnancies.,yes,50
+Mifepristone (RU-486) + Misoprostol,Abortive,"Blocks progesterone, expels murdered embryo (chemical abortion).",yes,40
+Progesterone-only Pill (Minipill),Abortive,Alters mucus & uterine lining.,yes,30
+"Surgical Abortion (D&E, D&C)",Abortive,Surgical removal of a murdered embryo/fetus. D&E = Dilation and Evacuation. D&C = Dilation and Curettage ,yes,10
+Misoprostol only,Abortive,Effectively induce and force labor. Baby dies as the result.,yes,20
+Abstinence,Contraceptive,This is the only option that is biblically faithful for unmarried people; it avoids pregnancy entirely.,yes,10
+"Barrier Methods (Condom, Diaphragm, Cap, Spermicides)",Contraceptive,Block sperm from reaching egg.,yes,40
+"Natural Family Planning (Ovulation, Rhythm, Calendar or Thermal)",Contraceptive,Works by timing intercourse with the wife's fertility cycle.,yes,30
+Periodic Abstinence,Contraceptive,"Temporary abstinence, prayer-based, mutually decided.",yes,20

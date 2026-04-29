@@ -1,70 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import Papa from 'papaparse';
+import React from 'react';
 
-function useFreshCsv(csvUrl) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function getColumns(data) {
+  const grouped = data.reduce((map, item) => {
+    const cat = item.Category?.trim() || 'Uncategorized';
+    if (!map[cat]) map[cat] = [];
+    map[cat].push(item);
+    return map;
+  }, {});
 
-  useEffect(() => {
-    let cancelled = false;
+  Object.values(grouped).forEach(arr =>
+    arr.sort((a, b) => (Number(a['Sort Order']) || 0) - (Number(b['Sort Order']) || 0))
+  );
 
-    fetch(csvUrl, { cache: import.meta.env.DEV ? "no-store" : "default" })
-      .then(res => res.text())
-      .then(csvText => {
-        if (cancelled) return;
-        Papa.parse(csvText, {
-          header: true,
-          skipEmptyLines: true,
-          complete: ({ data }) => {
-            // ✅ transform inline here (stable, no dependency issues)
-            const grouped = data.reduce((map, item) => {
-              const cat = item.Category?.trim() || 'Uncategorized';
-              if (!map[cat]) map[cat] = [];
-              map[cat].push(item);
-              return map;
-            }, {});
+  const entries = Object.entries(grouped);
+  const totalLinks = entries.reduce((sum, [, links]) => sum + links.length, 0);
+  const half = totalLinks / 2;
 
-            Object.values(grouped).forEach(arr =>
-              arr.sort((a, b) => (Number(a['Sort Order']) || 0) - (Number(b['Sort Order']) || 0))
-            );
+  const left = [], right = [];
+  let acc = 0;
+  for (let [cat, links] of entries) {
+    if (acc < half) { left.push([cat, links]); acc += links.length }
+    else { right.push([cat, links]) }
+  }
 
-            const entries = Object.entries(grouped);
-            const totalLinks = entries.reduce((sum, [, links]) => sum + links.length, 0);
-            const half = totalLinks / 2;
-
-            const left = [], right = [];
-            let acc = 0;
-            for (let [cat, links] of entries) {
-              if (acc < half) { left.push([cat, links]); acc += links.length }
-              else { right.push([cat, links]) }
-            }
-
-            setData({ left, right });
-            setLoading(false);
-          },
-          error: () => {
-            setError('CSV parse error');
-            setLoading(false);
-          },
-        });
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
-
-    return () => { cancelled = true };
-  }, [csvUrl]); // ✅ only re-run if URL changes
-
-  return { data, loading, error };
+  return { left, right };
 }
 
-export default function ResourceList({ csvUrl }) {
-  const { data: columns, loading, error } = useFreshCsv(csvUrl);
-
-  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>;
-  if (loading) return <div>Loading resources…</div>;
+export default function ResourceList({ resources = [] }) {
+  const columns = getColumns(resources);
 
   return (
     <div className="columns">

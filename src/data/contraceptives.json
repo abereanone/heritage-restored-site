@@ -1,0 +1,121 @@
+[
+  {
+    "Method": "Implant (Nexplanon)",
+    "Category": "Abortifacient",
+    "Notes/Mechanism": "Strongly prevents implantation.",
+    "visible": "yes",
+    "sortOrder": "60"
+  },
+  {
+    "Method": "Injection (Depo-Provera)",
+    "Category": "Abortifacient",
+    "Notes/Mechanism": "Progestin shot; alters mucus & uterine lining.",
+    "visible": "yes",
+    "sortOrder": "50"
+  },
+  {
+    "Method": "IUDs (Copper, Hormonal, Steel)",
+    "Category": "Abortifacient",
+    "Notes/Mechanism": "Induce inflammatory uterine environment; prevent implantation.",
+    "visible": "yes",
+    "sortOrder": "40"
+  },
+  {
+    "Method": "Patch",
+    "Category": "Abortifacient",
+    "Notes/Mechanism": "Releases estrogen & progestin; uses all 3 abortive mechanisms.",
+    "visible": "yes",
+    "sortOrder": "30"
+  },
+  {
+    "Method": "Vaginal Ring (NuvaRing)",
+    "Category": "Abortifacient",
+    "Notes/Mechanism": "Releases hormones; primarily prevents implantation.",
+    "visible": "yes",
+    "sortOrder": "20"
+  },
+  {
+    "Method": "Combination Oral Pill (The Pill)",
+    "Category": "Abortifacient",
+    "Notes/Mechanism": "Prevents ovulation, alters mucus, thins uterine lining (mechanisms 1–3).",
+    "visible": "yes",
+    "sortOrder": "10"
+  },
+  {
+    "Method": "Emergency IUDs (Copper-T, Mirena/Liletta)",
+    "Category": "Abortive",
+    "Notes/Mechanism": "Inserted post-fertilization to expel embryo.",
+    "visible": "yes",
+    "sortOrder": "70"
+  },
+  {
+    "Method": "Emergency Pills (Plan B, LNG-EC)",
+    "Category": "Abortive",
+    "Notes/Mechanism": "Taken within 72 hours; activates all 3 mechanisms.",
+    "visible": "yes",
+    "sortOrder": "60"
+  },
+  {
+    "Method": "Methotrexate + Misoprostol",
+    "Category": "Abortive",
+    "Notes/Mechanism": "Toxic to embryo; also used for ectopic pregnancies.",
+    "visible": "yes",
+    "sortOrder": "50"
+  },
+  {
+    "Method": "Mifepristone (RU-486) + Misoprostol",
+    "Category": "Abortive",
+    "Notes/Mechanism": "Blocks progesterone, expels murdered embryo (chemical abortion).",
+    "visible": "yes",
+    "sortOrder": "40"
+  },
+  {
+    "Method": "Progesterone-only Pill (Minipill)",
+    "Category": "Abortive",
+    "Notes/Mechanism": "Alters mucus & uterine lining.",
+    "visible": "yes",
+    "sortOrder": "30"
+  },
+  {
+    "Method": "Surgical Abortion (D&E, D&C)",
+    "Category": "Abortive",
+    "Notes/Mechanism": "Surgical removal of a murdered embryo/fetus. D&E = Dilation and Evacuation. D&C = Dilation and Curettage ",
+    "visible": "yes",
+    "sortOrder": "10"
+  },
+  {
+    "Method": "Misoprostol only",
+    "Category": "Abortive",
+    "Notes/Mechanism": "Effectively induce and force labor. Baby dies as the result.",
+    "visible": "yes",
+    "sortOrder": "20"
+  },
+  {
+    "Method": "Abstinence",
+    "Category": "Contraceptive",
+    "Notes/Mechanism": "This is the only option that is biblically faithful for unmarried people; it avoids pregnancy entirely.",
+    "visible": "yes",
+    "sortOrder": "10"
+  },
+  {
+    "Method": "Barrier Methods (Condom, Diaphragm, Cap, Spermicides)",
+    "Category": "Contraceptive",
+    "Notes/Mechanism": "Block sperm from reaching egg.",
+    "visible": "yes",
+    "sortOrder": "40"
+  },
+  {
+    "Method": "Natural Family Planning (Ovulation, Rhythm, Calendar or Thermal)",
+    "Category": "Contraceptive",
+    "Notes/Mechanism": "Works by timing intercourse with the wife's fertility cycle.",
+    "visible": "yes",
+    "sortOrder": "30"
+  },
+  {
+    "Method": "Periodic Abstinence",
+    "Category": "Contraceptive",
+    "Notes/Mechanism": "Temporary abstinence, prayer-based, mutually decided.",
+    "visible": "yes",
+    "sortOrder": "20"
+  }
+]

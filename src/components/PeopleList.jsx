@@ -1,78 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import Papa from 'papaparse';
+import React, { useEffect, useMemo, useState } from 'react';
 
-export default function PeopleList({ csvUrl, filterNames, hideBio = false, className = '' }) {
-  const [people, setPeople] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function PeopleList({ people: rows = [], filterNames, hideBio = false, className = '' }) {
+  const [showall, setShowall] = useState(false);
   const [expanded, setExpanded] = useState({});
   const filterKey = Array.isArray(filterNames) ? JSON.stringify(filterNames) : '';
 
   useEffect(() => {
-    let cancelled = false;
-
     const params = new URLSearchParams(window.location.search);
     const val = (params.get('showall') || '').trim().toLowerCase();
-    const showall = val === 'y' || val === 'yes' || val === 'true' || val === '1';
+    setShowall(val === 'y' || val === 'yes' || val === 'true' || val === '1');
+  }, []);
 
-    // Fetch directly (no cache-buster, let browser handle freshness)
-    fetch(csvUrl, { cache: 'no-store' })
-      .then(res => res.text())
-      .then(csvText => {
-        if (cancelled) return;
-        Papa.parse(csvText, {
-          header: true,
-          skipEmptyLines: true,
-          complete: ({ data }) => {
-            let cleaned = data;
+  const people = useMemo(() => {
+    let cleaned = rows;
 
-            if (!showall) {
-              cleaned = cleaned.filter(
-                row => (row.visible ?? '').toString().trim().toLowerCase() !== 'no'
-              );
-            }
+    if (!showall) {
+      cleaned = cleaned.filter(
+        row => (row.visible ?? '').toString().trim().toLowerCase() !== 'no'
+      );
+    }
 
-            cleaned = cleaned
-              .map(row => {
-                const priority = parseInt((row.priority ?? '').toString().trim(), 10);
-                return {
-                  ...row,
-                  name: (row.name ?? '').toString().trim(),
-                  role: (row.role ?? '').toString().trim(),
-                  bio: (row.bio ?? '').toString().trim(),
-                  link_url: (row.link_url ?? '').toString().trim(),
-                  link_label: (row.link_label ?? '').toString().trim(),
-                  photo_url: (row.photo_url ?? '').toString().trim(),
-                  _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER,
-                };
-              })
-              .sort((a, b) => a._priority - b._priority);
-
-            if (filterKey) {
-              const allowedNames = JSON.parse(filterKey);
-              const allowed = new Set(
-                allowedNames
-                  .map(name => (name ?? '').toString().trim())
-                  .filter(Boolean)
-              );
-              if (allowed.size) {
-                cleaned = cleaned.filter(person => allowed.has(person.name));
-              }
-            }
-
-            setPeople(cleaned);
-            setLoading(false);
-          },
-          error: () => setLoading(false),
-        });
+    cleaned = cleaned
+      .map(row => {
+        const priority = parseInt((row.priority ?? '').toString().trim(), 10);
+        return {
+          ...row,
+          name: (row.name ?? '').toString().trim(),
+          role: (row.role ?? '').toString().trim(),
+          bio: (row.bio ?? '').toString().trim(),
+          link_url: (row.link_url ?? '').toString().trim(),
+          link_label: (row.link_label ?? '').toString().trim(),
+          photo_url: (row.photo_url ?? '').toString().trim(),
+          _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER,
+        };
       })
-      .catch(() => setLoading(false));
+      .sort((a, b) => a._priority - b._priority);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [csvUrl, filterKey]);
+    if (filterKey) {
+      const allowedNames = JSON.parse(filterKey);
+      const allowed = new Set(
+        allowedNames
+          .map(name => (name ?? '').toString().trim())
+          .filter(Boolean)
+      );
+      if (allowed.size) {
+        cleaned = cleaned.filter(person => allowed.has(person.name));
+      }
+    }
 
-  if (loading) return <div>Loading people now... be patient</div>;
+    return cleaned;
+  }, [rows, showall, filterKey]);
 
   const gridClass = ['people-grid', className].filter(Boolean).join(' ');
 

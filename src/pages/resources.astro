@@ -3,8 +3,8 @@
 import Layout from '../layouts/Layout.astro';
 import ResourceList from '../components/ResourceList.jsx';
 import PlaylistEmbed from "../components/PlaylistEmbed.astro";
+import resources from '../data/resources.json';
 
-const resourcesUrl = '/api/resources.csv';
 ---
 
 <Layout title="Resources">
@@ -15,7 +15,7 @@ const resourcesUrl = '/api/resources.csv';
       not be in complete agreement on everything that ministry stands for.
     </p>
 
-    <ResourceList client:load csvUrl={resourcesUrl} />
+    <ResourceList client:load resources={resources} />
     <PlaylistEmbed playlistId="PLzfcgkHBc7S4s6Mn-kN771HGr_A5nYMze" />
     <p class="back-to-top"><a href="#top">↑ Back to top</a></p>
   </article>
