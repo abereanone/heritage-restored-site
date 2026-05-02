@@ -15,6 +15,5 @@ This folder owns the local BSB corpus used by the site.
   - normalizes `bsb-data-pipeline/bsb.json` in place.
 
 - `npm run build:bible`
-  - reads `src/generated/questions.json`,
   - extracts cited references,
   - writes `src/generated/bible-cited.json` for runtime `getVerse()` lookups.

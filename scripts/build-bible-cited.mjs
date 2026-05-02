@@ -19,21 +19,12 @@ const sourceDirs = [
 const sourceExtensions = new Set([".astro", ".md", ".mdx", ".js", ".jsx", ".ts", ".tsx", ".json"]);
 
 const singleChapterBooks = new Set([
-  "obadiah",
   "oba",
-  "philemon",
   "phm",
   "2jn",
   "3jn",
-  "jude",
   "jud",
 ]);
-
-const bsbCodeOverrides = {
-  mrk: "MAR",
-  nah: "NAM",
-  phm: "PHL",
-};
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -163,10 +154,6 @@ function expandReferenceVariants(normalizedReference) {
   return variants;
 }
 
-function toBsbBookCode(bookCode) {
-  return bsbCodeOverrides[bookCode] ?? String(bookCode).toUpperCase();
-}
-
 function normalizeVersion(value) {
   const cleaned = String(value ?? "").trim();
   if (!cleaned) {
@@ -194,7 +181,7 @@ function resolveVerseData(bible, normalizedReference) {
   const normalizedKey = normalizeLookupKey(normalizedReference);
   const chapterOnlyMatch = normalizedKey.match(/^([a-z0-9]+)\s+(\d+)$/);
   if (chapterOnlyMatch) {
-    const bookCode = toBsbBookCode(chapterOnlyMatch[1]);
+    const bookCode = chapterOnlyMatch[1];
     const chapterNumber = Number.parseInt(chapterOnlyMatch[2], 10);
     if (Number.isNaN(chapterNumber) || chapterNumber <= 0) {
       return { text: "", version: "" };
@@ -238,7 +225,7 @@ function resolveVerseData(bible, normalizedReference) {
     return { text: "", version: "" };
   }
 
-  const bookCode = toBsbBookCode(match[1]);
+  const bookCode = match[1];
   const chapterNumber = Number.parseInt(match[2], 10);
   if (Number.isNaN(chapterNumber) || chapterNumber <= 0) {
     return { text: "", version: "" };
