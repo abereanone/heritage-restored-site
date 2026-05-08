@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Heritage Restored Featured Playlist",
+    "type": "playlist",
+    "playlistId": "PLzfcgkHBc7S7QyXQbnQKHD609WZ15GJud"
+  },
+  {
+    "title": "Heritage Restored Resources Playlist",
+    "type": "playlist",
+    "playlistId": "PLzfcgkHBc7S4s6Mn-kN771HGr_A5nYMze"
+  },
+  {
+    "title": "Featured Video",
+    "type": "video",
+    "youtubeId": "FJ0gguZkwTo"
+  },
+  {
+    "title": "Featured Short",
+    "type": "short",
+    "youtubeId": "1ZYcee5WGQg"
+  },
+  {
+    "title": "Featured Short",
+    "type": "short",
+    "youtubeId": "KyvDKSdwVAg"
+  },
+  {
+    "title": "Featured Short",
+    "type": "short",
+    "youtubeId": "ZyQ_Vw4N5Vk"
+  }
+]

@@ -1,0 +1,166 @@
+---
+const { dataUrl = "/data/featured-videos.json" } = Astro.props;
+const fallbackParams = new URLSearchParams({
+  list: "PLzfcgkHBc7S7QyXQbnQKHD609WZ15GJud",
+  rel: "0",
+  modestbranding: "1",
+});
+---
+
+<section class="featured-video" data-featured-video data-featured-video-url={dataUrl}>
+  <div class="featured-video-frame" data-featured-video-frame>
+    <iframe
+      src={`https://www.youtube-nocookie.com/embed/videoseries?${fallbackParams.toString()}`}
+      title="YouTube playlist"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen>
+    </iframe>
+  </div>
+  <p class="featured-video-note">The embedded video may not load if you are on a VPN.</p>
+</section>
+
+<script>
+  function buildEmbedUrl(video) {
+    const type = String(video?.type || "video").toLowerCase();
+
+    if (type === "playlist" && video?.playlistId) {
+      const params = new URLSearchParams({
+        list: String(video.playlistId),
+        rel: "0",
+        modestbranding: "1",
+      });
+      return `https://www.youtube-nocookie.com/embed/videoseries?${params.toString()}`;
+    }
+
+    if ((type === "video" || type === "short") && video?.youtubeId) {
+      const params = new URLSearchParams({
+        rel: "0",
+        modestbranding: "1",
+      });
+      return `https://www.youtube-nocookie.com/embed/${video.youtubeId}?${params.toString()}`;
+    }
+
+    return "";
+  }
+
+  function pickVideo(videos) {
+    const validVideos = videos.filter((video) => buildEmbedUrl(video));
+    if (!validVideos.length) {
+      return null;
+    }
+
+    return validVideos[Math.floor(Math.random() * validVideos.length)];
+  }
+
+  function renderFeaturedVideo(root, video) {
+    const frame = root.querySelector("[data-featured-video-frame]");
+    if (!frame) {
+      return;
+    }
+
+    const embedUrl = buildEmbedUrl(video);
+    if (!embedUrl) {
+      return;
+    }
+
+    frame.classList.toggle("is-short", String(video?.type || "").toLowerCase() === "short");
+    frame.innerHTML = "";
+
+    const iframe = document.createElement("iframe");
+    iframe.src = embedUrl;
+    iframe.title = String(video?.title || "Featured video");
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    iframe.allowFullscreen = true;
+    iframe.style.position = "absolute";
+    iframe.style.inset = "0";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "0";
+    frame.append(iframe);
+  }
+
+  function initFeaturedVideos() {
+    document.querySelectorAll("[data-featured-video]").forEach((root) => {
+      if (root.dataset.featuredVideoState === "ready") {
+        return;
+      }
+
+      root.dataset.featuredVideoState = "ready";
+      const dataUrl = root.getAttribute("data-featured-video-url") || "/data/featured-videos.json";
+
+      fetch(dataUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Unable to load ${dataUrl}`);
+          }
+          return response.json();
+        })
+        .then((videos) => {
+          const selectedVideo = Array.isArray(videos) ? pickVideo(videos) : null;
+          renderFeaturedVideo(root, selectedVideo);
+        })
+        .catch(() => {
+          // Keep the server-rendered fallback playlist.
+        });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initFeaturedVideos);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initFeaturedVideos, { once: true });
+  } else {
+    initFeaturedVideos();
+  }
+</script>
+
+<style>
+  .featured-video {
+    margin: 1.5rem 0;
+  }
+
+  .featured-video-frame {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    min-height: 180px;
+    aspect-ratio: 16 / 9;
+    margin-inline: auto;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #111;
+  }
+
+  .featured-video-frame.is-short {
+    width: min(100%, 380px);
+    max-width: none;
+    aspect-ratio: 9 / 16;
+  }
+
+  .featured-video-frame :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .featured-video-frame p {
+    display: grid;
+    min-height: inherit;
+    margin: 0;
+    place-items: center;
+    color: #fff;
+  }
+
+  .featured-video-note {
+    margin: 0.5rem auto 0;
+    max-width: 960px;
+    font-size: 0.9rem;
+    opacity: 0.72;
+    text-align: center;
+  }
+</style>

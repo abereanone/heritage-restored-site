@@ -2,7 +2,7 @@
 // src/pages/resources.astro
 import Layout from '../layouts/Layout.astro';
 import ResourceList from '../components/ResourceList.jsx';
-import PlaylistEmbed from "../components/PlaylistEmbed.astro";
+import FeaturedVideo from "../components/FeaturedVideo.astro";
 import resources from '../data/resources.json';
 
 ---
@@ -16,7 +16,7 @@ import resources from '../data/resources.json';
     </p>
 
     <ResourceList client:load resources={resources} />
-    <PlaylistEmbed playlistId="PLzfcgkHBc7S4s6Mn-kN771HGr_A5nYMze" />
+    <FeaturedVideo />
     <p class="back-to-top"><a href="#top">↑ Back to top</a></p>
   </article>
 </Layout>
