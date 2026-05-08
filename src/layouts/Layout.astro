@@ -155,11 +155,6 @@ const processed = autoLinkBibleRefs(raw);
       </p>
     </footer>
 
-    <!-- Floating Chat Button -->
-    <button id="chatBtn">
-      💬
-      <span class="chat-label">Chat with a trained abolitionist AI</span>
-    </button>
 
     <!-- Dark mode script -->
     <script>
@@ -182,17 +177,6 @@ const processed = autoLinkBibleRefs(raw);
         localStorage.setItem('theme', newTheme);
       });
 
-      // Chat button logic
-      document.addEventListener("DOMContentLoaded", () => {
-        const chatBtn = document.getElementById("chatBtn");
-        chatBtn.addEventListener("click", () => {
-          window.open(
-            "https://chatgpt.com/g/g-68c9835ac6bc819182c9f7dc31bad372-the-abolitionist-voice",
-            "AbolitionistVoice",
-            "width=500,height=700,resizable=yes,scrollbars=yes"
-          );
-        });
-      });
     </script>
 
 
