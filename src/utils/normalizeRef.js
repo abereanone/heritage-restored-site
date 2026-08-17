@@ -22,7 +22,10 @@ function normalizeBookName(book) {
 }
 
 export function normalizeReference(reference) {
-  const lower = String(reference ?? "").trim().toLowerCase().replace(/\u2013|\u2014/g, "-");
+  const lower = String(reference ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\u2013|\u2014/g, "-");
   const parts = lower.split(/\s+/);
 
   if (parts.length < 2) {

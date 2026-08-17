@@ -1,23 +1,28 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 
 function initialsFor(name) {
-  return (name ?? '')
+  return (name ?? "")
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map(part => part[0].toUpperCase())
-    .join('');
+    .map((part) => part[0].toUpperCase())
+    .join("");
 }
 
-export default function PeopleList({ people: rows = [], filterNames, hideBio = false, className = '' }) {
+export default function PeopleList({
+  people: rows = [],
+  filterNames,
+  hideBio = false,
+  className = "",
+}) {
   const [showall, setShowall] = useState(false);
   const [expanded, setExpanded] = useState({});
-  const filterKey = Array.isArray(filterNames) ? JSON.stringify(filterNames) : '';
+  const filterKey = Array.isArray(filterNames) ? JSON.stringify(filterNames) : "";
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const val = (params.get('showall') || '').trim().toLowerCase();
-    setShowall(val === 'y' || val === 'yes' || val === 'true' || val === '1');
+    const val = (params.get("showall") || "").trim().toLowerCase();
+    setShowall(val === "y" || val === "yes" || val === "true" || val === "1");
   }, []);
 
   const people = useMemo(() => {
@@ -25,21 +30,21 @@ export default function PeopleList({ people: rows = [], filterNames, hideBio = f
 
     if (!showall) {
       cleaned = cleaned.filter(
-        row => (row.visible ?? '').toString().trim().toLowerCase() !== 'no'
+        (row) => (row.visible ?? "").toString().trim().toLowerCase() !== "no",
       );
     }
 
     cleaned = cleaned
-      .map(row => {
-        const priority = parseInt((row.priority ?? '').toString().trim(), 10);
+      .map((row) => {
+        const priority = parseInt((row.priority ?? "").toString().trim(), 10);
         return {
           ...row,
-          name: (row.name ?? '').toString().trim(),
-          role: (row.role ?? '').toString().trim(),
-          bio: (row.bio ?? '').toString().trim(),
-          link_url: (row.link_url ?? '').toString().trim(),
-          link_label: (row.link_label ?? '').toString().trim(),
-          photo_url: (row.photo_url ?? '').toString().trim(),
+          name: (row.name ?? "").toString().trim(),
+          role: (row.role ?? "").toString().trim(),
+          bio: (row.bio ?? "").toString().trim(),
+          link_url: (row.link_url ?? "").toString().trim(),
+          link_label: (row.link_label ?? "").toString().trim(),
+          photo_url: (row.photo_url ?? "").toString().trim(),
           _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER,
         };
       })
@@ -48,19 +53,17 @@ export default function PeopleList({ people: rows = [], filterNames, hideBio = f
     if (filterKey) {
       const allowedNames = JSON.parse(filterKey);
       const allowed = new Set(
-        allowedNames
-          .map(name => (name ?? '').toString().trim())
-          .filter(Boolean)
+        allowedNames.map((name) => (name ?? "").toString().trim()).filter(Boolean),
       );
       if (allowed.size) {
-        cleaned = cleaned.filter(person => allowed.has(person.name));
+        cleaned = cleaned.filter((person) => allowed.has(person.name));
       }
     }
 
     return cleaned;
   }, [rows, showall, filterKey]);
 
-  const gridClass = ['people-grid', className].filter(Boolean).join(' ');
+  const gridClass = ["people-grid", className].filter(Boolean).join(" ");
 
   return (
     <div className={gridClass}>
@@ -68,9 +71,8 @@ export default function PeopleList({ people: rows = [], filterNames, hideBio = f
         const key = person.name || `person-${idx}`;
         const isExpanded = !!expanded[key];
         const shouldTruncate = person.bio && person.bio.length > 350;
-        const displayBio = !isExpanded && shouldTruncate
-          ? `${person.bio.substring(0, 100)} ... `
-          : person.bio;
+        const displayBio =
+          !isExpanded && shouldTruncate ? `${person.bio.substring(0, 100)} ... ` : person.bio;
         const showBio = Boolean(person.bio) && !hideBio;
 
         return (
@@ -79,7 +81,7 @@ export default function PeopleList({ people: rows = [], filterNames, hideBio = f
               {person.photo_url ? (
                 <img
                   src={`/${person.photo_url}`}
-                  alt={person.name || 'Person'}
+                  alt={person.name || "Person"}
                   width="165"
                   height="165"
                   loading="lazy"
@@ -103,13 +105,11 @@ export default function PeopleList({ people: rows = [], filterNames, hideBio = f
                 {shouldTruncate && (
                   <button
                     type="button"
-                    onClick={() =>
-                      setExpanded(prev => ({ ...prev, [key]: !isExpanded }))
-                    }
+                    onClick={() => setExpanded((prev) => ({ ...prev, [key]: !isExpanded }))}
                     aria-expanded={isExpanded}
                     className="inline-link-button"
                   >
-                    {isExpanded ? ' Show less' : ' Read more'}
+                    {isExpanded ? " Show less" : " Read more"}
                   </button>
                 )}
               </p>
@@ -118,7 +118,7 @@ export default function PeopleList({ people: rows = [], filterNames, hideBio = f
             {person.link_url && (
               <p>
                 <a href={person.link_url} target="_blank" rel="noopener noreferrer">
-                  {person.link_label || 'Learn more'}
+                  {person.link_label || "Learn more"}
                 </a>
               </p>
             )}

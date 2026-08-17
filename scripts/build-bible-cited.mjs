@@ -18,13 +18,7 @@ const sourceDirs = [
 
 const sourceExtensions = new Set([".astro", ".md", ".mdx", ".js", ".jsx", ".ts", ".tsx", ".json"]);
 
-const singleChapterBooks = new Set([
-  "oba",
-  "phm",
-  "2jn",
-  "3jn",
-  "jud",
-]);
+const singleChapterBooks = new Set(["oba", "phm", "2jn", "3jn", "jud"]);
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -41,7 +35,10 @@ function normalizeBookName(bookMap, book) {
 }
 
 function normalizeReference(bookMap, reference) {
-  const lower = reference.trim().toLowerCase().replace(/\u2013|\u2014/g, "-");
+  const lower = reference
+    .trim()
+    .toLowerCase()
+    .replace(/\u2013|\u2014/g, "-");
   const parts = lower.split(/\s+/);
 
   if (parts.length < 2) {
@@ -283,7 +280,11 @@ function resolveVerseData(bible, normalizedReference) {
     if (ffMatch) {
       const start = Number.parseInt(ffMatch[1], 10);
       if (!Number.isNaN(start) && start > 0) {
-        for (let verseNumber = start; verseNumber <= chapterEntriesForValue.length; verseNumber += 1) {
+        for (
+          let verseNumber = start;
+          verseNumber <= chapterEntriesForValue.length;
+          verseNumber += 1
+        ) {
           appendVerse(chapterValue, verseNumber);
         }
       }
@@ -397,22 +398,22 @@ function extractRawReferences(content, bookMap) {
 
   const multiVerseSingleChapterRegex = new RegExp(
     `\\b(${singleChapterBookPattern})\\s+(\\d+(?:[-\\u2013\\u2014]\\d+)?)(?:\\s*,\\s*\\d+(?:[-\\u2013\\u2014]\\d+)?)+`,
-    "gi"
+    "gi",
   );
 
   const multiVerseRegex = new RegExp(
     `\\b(${bookPattern})\\s+(\\d+):(\\d+(?:[-\\u2013\\u2014]\\d+)?)(?:\\s*,\\s*\\d+(?::\\d+(?:[-\\u2013\\u2014]\\d+)?)?(?:[-\\u2013\\u2014]\\d+)?)+`,
-    "gi"
+    "gi",
   );
 
   const singleVerseSingleChapterRegex = new RegExp(
     `\\b(${singleChapterBookPattern})\\s+(\\d+(?:[-\\u2013\\u2014]\\d+)?)\\b`,
-    "gi"
+    "gi",
   );
 
   const singleVerseRegex = new RegExp(
     `\\b(${bookPattern})\\s+(\\d+):(\\d+(?:[-\\u2013\\u2014]\\d+)?)\\b`,
-    "gi"
+    "gi",
   );
 
   const chapterOnlyRegex = new RegExp(`\\b(${bookPattern})\\s+(\\d+)\\b(?!\\s*:)`, "gi");
@@ -441,7 +442,8 @@ function extractRawReferences(content, bookMap) {
 
     refs.add(`${book} ${chapter}:${firstVerse}`);
     const rest = whole.slice(`${book} ${chapter}:${firstVerse}`.length);
-    const extraMatches = rest.match(/,\s*\d+(?::\d+(?:[-\u2013\u2014]\d+)?)?(?:[-\u2013\u2014]\d+)?/g) ?? [];
+    const extraMatches =
+      rest.match(/,\s*\d+(?::\d+(?:[-\u2013\u2014]\d+)?)?(?:[-\u2013\u2014]\d+)?/g) ?? [];
     extraMatches.forEach((chunk) => {
       const verse = chunk.replace(/,\s*/, "");
       refs.add(verse.includes(":") ? `${book} ${verse}` : `${book} ${chapter}:${verse}`);
@@ -458,7 +460,9 @@ function extractRawReferences(content, bookMap) {
   }
 
   for (const match of content.matchAll(singleVerseSingleChapterRegex)) {
-    const book = String(match[1] ?? "").toLowerCase().replace(/\./g, "");
+    const book = String(match[1] ?? "")
+      .toLowerCase()
+      .replace(/\./g, "");
     const verse = match[2] ?? "";
     if (singleChapterBooks.has(book) && verse) {
       refs.add(`${match[1]} ${verse}`);
@@ -466,7 +470,9 @@ function extractRawReferences(content, bookMap) {
   }
 
   for (const match of content.matchAll(chapterOnlyRegex)) {
-    const book = String(match[1] ?? "").toLowerCase().replace(/\./g, "");
+    const book = String(match[1] ?? "")
+      .toLowerCase()
+      .replace(/\./g, "");
     const chapter = match[2] ?? "";
     if (singleChapterBooks.has(book)) continue;
     if (chapter) {
@@ -532,7 +538,7 @@ async function run() {
   await fs.writeFile(outputFile, `${JSON.stringify(output, null, 2)}\n`, "utf8");
 
   console.log(
-    `Generated ${Object.keys(verses).length} cited verse lookups (${missingCount} unresolved references skipped).`
+    `Generated ${Object.keys(verses).length} cited verse lookups (${missingCount} unresolved references skipped).`,
   );
 
   if (process.env.DEBUG_MISSING_BIBLE_REFS === "1" && missingReferences.length) {

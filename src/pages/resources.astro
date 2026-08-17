@@ -1,10 +1,9 @@
 ---
 // src/pages/resources.astro
-import Layout from '../layouts/Layout.astro';
-import ResourceList from '../components/ResourceList.jsx';
+import Layout from "../layouts/Layout.astro";
+import ResourceList from "../components/ResourceList.jsx";
 import FeaturedVideo from "../components/FeaturedVideo.astro";
-import resources from '../data/resources.json';
-
+import resources from "../data/resources.json";
 ---
 
 <Layout
@@ -14,8 +13,8 @@ import resources from '../data/resources.json';
   <article>
     <h1>Resources</h1>
     <p>
-      Heritage Restored generally supports all the ministries listed here but may
-      not be in complete agreement on everything that ministry stands for.
+      Heritage Restored generally supports all the ministries listed here but may not be in complete
+      agreement on everything that ministry stands for.
     </p>
 
     <ResourceList client:load resources={resources} />

@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 
 export default function Contra({ rows = [] }) {
   const items = rows
-    .filter(r => (r.visible ?? r.Visible ?? '').toString().trim().toLowerCase() !== 'no')
-    .map(r => {
+    .filter((r) => (r.visible ?? r.Visible ?? "").toString().trim().toLowerCase() !== "no")
+    .map((r) => {
       const raw = r.sortOrder ?? r.SortOrder ?? r.sortorder;
-      const n = Number.parseInt((raw ?? '').toString().trim(), 10);
+      const n = Number.parseInt((raw ?? "").toString().trim(), 10);
       return {
         ...r,
-        Method: (r.Method ?? '').toString().trim(),
-        Category: (r.Category ?? '').toString().trim(),
-        NotesMechanism: (r['Notes/Mechanism'] ?? r['NotesMechanism'] ?? '').toString().trim(),
+        Method: (r.Method ?? "").toString().trim(),
+        Category: (r.Category ?? "").toString().trim(),
+        NotesMechanism: (r["Notes/Mechanism"] ?? r["NotesMechanism"] ?? "").toString().trim(),
         sortOrder: Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER,
       };
     });
@@ -27,13 +27,15 @@ export default function Contra({ rows = [] }) {
   return (
     <div className="contra-grid">
       {items.map((item, idx) => {
-        const catKey = (item.Category || '').toLowerCase();
+        const catKey = (item.Category || "").toLowerCase();
         return (
           <div className={`contra-card ${catKey}`} key={idx}>
             <h2>{item.Method}</h2>
             <h2>{item.Category}</h2>
             {item.NotesMechanism && (
-              <p><strong>Mechanism:</strong> {item.NotesMechanism}</p>
+              <p>
+                <strong>Mechanism:</strong> {item.NotesMechanism}
+              </p>
             )}
           </div>
         );

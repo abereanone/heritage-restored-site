@@ -27,19 +27,19 @@ const singleChapterBookPattern = [...singleChapterBooks]
 
 const multiVerseSingleChapterRegex = new RegExp(
   `\\b(${singleChapterBookPattern})\\s+(\\d+(?:[-\\u2013\\u2014]\\d+)?)(?:\\s*,\\s*\\d+(?:[-\\u2013\\u2014]\\d+)?)+`,
-  "gi"
+  "gi",
 );
 const multiVerseRegex = new RegExp(
   `\\b(${bookPattern})\\s+(\\d+):(\\d+(?:[-\\u2013\\u2014]\\d+)?)(?:\\s*,\\s*\\d+(?::\\d+(?:[-\\u2013\\u2014]\\d+)?)?(?:[-\\u2013\\u2014]\\d+)?)+`,
-  "gi"
+  "gi",
 );
 const singleVerseSingleChapterRegex = new RegExp(
   `\\b(${singleChapterBookPattern})\\s+(\\d+(?:[-\\u2013\\u2014]\\d+)?)\\b`,
-  "gi"
+  "gi",
 );
 const singleVerseRegex = new RegExp(
   `\\b(${bookPattern})\\s+(\\d+):(\\d+(?:[-\\u2013\\u2014]\\d+)?)\\b`,
-  "gi"
+  "gi",
 );
 const chapterOnlyRegex = new RegExp(`\\b(${bookPattern})\\s+(\\d+)\\b(?!\\s*:)`, "gi");
 const continuedVerseRegex = /([;]\s*)(\d+:\d+(?:[-\u2013\u2014]\d+)?)(?=(?:\s*[;),.]|\s*$))/g;
@@ -74,7 +74,7 @@ function linkBibleRefsText(text) {
       const token = `__BIBLE_MULTI__${placeholders.length}__`;
       placeholders.push(output);
       return token;
-    }
+    },
   );
 
   const withMulti = withSingleChapterMulti.replace(
@@ -85,9 +85,8 @@ function linkBibleRefsText(text) {
       let output = `<span class="bible-ref" data-ref="${firstRef}">${book} ${chapter}:${firstVerse}</span>`;
 
       const rest = match.slice(`${book} ${chapter}:${firstVerse}`.length);
-      const extraMatches = rest.match(
-        /,\s*\d+(?::\d+(?:[-\u2013\u2014]\d+)?)?(?:[-\u2013\u2014]\d+)?/g
-      ) ?? [];
+      const extraMatches =
+        rest.match(/,\s*\d+(?::\d+(?:[-\u2013\u2014]\d+)?)?(?:[-\u2013\u2014]\d+)?/g) ?? [];
 
       extraMatches.forEach((chunk) => {
         const verse = chunk.replace(/,\s*/, "");
@@ -98,7 +97,7 @@ function linkBibleRefsText(text) {
       const token = `__BIBLE_MULTI__${placeholders.length}__`;
       placeholders.push(output);
       return token;
-    }
+    },
   );
 
   const withSingleChapterSingles = withMulti.replace(
@@ -106,7 +105,7 @@ function linkBibleRefsText(text) {
     (match, book, verse) => {
       const ref = `${book} ${verse}`;
       return `<span class="bible-ref" data-ref="${ref}">${match}</span>`;
-    }
+    },
   );
 
   const withSingles = withSingleChapterSingles.replace(
@@ -114,7 +113,7 @@ function linkBibleRefsText(text) {
     (match, book, chapter, verse) => {
       const ref = `${book} ${chapter}:${verse}`;
       return `<span class="bible-ref" data-ref="${ref}">${match}</span>`;
-    }
+    },
   );
 
   const withContinuedVerses = withSingles.replace(
@@ -137,12 +136,12 @@ function linkBibleRefsText(text) {
         const ref = `${lastBook} ${chapterVerse}`;
         return `${separator}<span class="bible-ref" data-ref="${ref}">${chapterVerse}</span>`;
       });
-    }
+    },
   );
 
   return withContinuedVerses.replace(/__BIBLE_MULTI__(\d+)__/g, (match, index) => {
     const idx = Number(index);
-    return Number.isNaN(idx) ? match : placeholders[idx] ?? match;
+    return Number.isNaN(idx) ? match : (placeholders[idx] ?? match);
   });
 }
 

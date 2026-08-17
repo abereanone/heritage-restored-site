@@ -3,10 +3,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  integrations: [
-    react(),
-    sitemap(),
-  ],
+  integrations: [react(), sitemap()],
   site: "https://heritagerestored.org",
   vite: {
     optimizeDeps: {

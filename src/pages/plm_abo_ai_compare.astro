@@ -12,27 +12,24 @@ const description =
 <Layout {title} {description}>
   <h1>{title}</h1>
   <p class="lede">{subtitle}</p>
-  <p>
-    Pro-Life answer was retrieved using the AI bot trained at
-    https://www.embracegrace.com/
-  </p>
-  <p>
-    The Abolitionist position is included for comparison.
-  </p>
+  <p>Pro-Life answer was retrieved using the AI bot trained at https://www.embracegrace.com/</p>
+  <p>The Abolitionist position is included for comparison.</p>
 
-  {qaData.map((item) => (
-    <div class="qa-item">
-      <h2 class="qa-question">Q: {item.question}</h2>
-      <div class="qa-grid">
-        <div class="qa-answer plm">
-          <h3>PLM Answer</h3>
-          <div set:html={item.answer_plm}></div>
-        </div>
-        <div class="qa-answer abo">
-          <h3>ABO Answer</h3>
-          <div set:html={item.answer_abo || "Coming soon..."}></div>
+  {
+    qaData.map((item) => (
+      <div class="qa-item">
+        <h2 class="qa-question">Q: {item.question}</h2>
+        <div class="qa-grid">
+          <div class="qa-answer plm">
+            <h3>PLM Answer</h3>
+            <div set:html={item.answer_plm} />
+          </div>
+          <div class="qa-answer abo">
+            <h3>ABO Answer</h3>
+            <div set:html={item.answer_abo || "Coming soon..."} />
+          </div>
         </div>
       </div>
-    </div>
-  ))}
+    ))
+  }
 </Layout>
