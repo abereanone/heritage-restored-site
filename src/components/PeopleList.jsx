@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
+function initialsFor(name) {
+  return (name ?? '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part[0].toUpperCase())
+    .join('');
+}
+
 export default function PeopleList({ people: rows = [], filterNames, hideBio = false, className = '' }) {
   const [showall, setShowall] = useState(false);
   const [expanded, setExpanded] = useState({});
@@ -67,10 +76,19 @@ export default function PeopleList({ people: rows = [], filterNames, hideBio = f
         return (
           <div className="person-card" key={key}>
             <div className="person-photo">
-              <img
-                src={`/${person.photo_url || 'placeholder.png'}`}
-                alt={person.name || 'Person'}
-              />
+              {person.photo_url ? (
+                <img
+                  src={`/${person.photo_url}`}
+                  alt={person.name || 'Person'}
+                  width="165"
+                  height="165"
+                  loading="lazy"
+                />
+              ) : (
+                <span className="person-photo-initials" aria-hidden="true">
+                  {initialsFor(person.name)}
+                </span>
+              )}
             </div>
             {person.name && <h2>{person.name}</h2>}
             {person.role && (

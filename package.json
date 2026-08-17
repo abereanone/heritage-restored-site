@@ -12,8 +12,8 @@
     "prebuild": "npm run build:bible"
   },
   "dependencies": {
-    "18": "^0.0.0",
     "@astrojs/react": "^4.4.0",
+    "@astrojs/sitemap": "^3.7.3",
     "astro": "^6.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

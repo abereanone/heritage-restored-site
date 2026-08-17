@@ -11,9 +11,13 @@ const {
 
 const baseDescription =
   "Heritage Restored equips Christians with theology, witness, and resources centered on love-driven abolition.";
-const pageTitle = title ? `${title}` : siteName;
+const pageTitle = title ?? siteName;
+// The <title> carries the site name so search results and tabs are identifiable;
+// og:title omits it because og:site_name already supplies it.
+const documentTitle = title ? `${title} | ${siteName}` : siteName;
 const metaDescription = propDescription ?? baseDescription;
-const baseImage = propImage ?? "/HRLOGO.png";
+// 1200x630 so link previews render as a large card rather than a cropped square.
+const baseImage = propImage ?? "/og-card.png";
 
 const origin = Astro.url.origin ?? "";
 const baseUrl = Astro.site ?? origin;
@@ -22,6 +26,36 @@ const canonicalHref = baseUrl
   : Astro.url.href;
 const metaImageUrl = baseUrl ? new URL(baseImage, baseUrl).href : baseImage;
 
+const siteHref = baseUrl ? new URL("/", baseUrl).href : "/";
+const logoHref = baseUrl
+  ? new URL("/logo-512.png", baseUrl).href
+  : "/logo-512.png";
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  "@id": `${siteHref}#organization`,
+  name: siteName,
+  url: siteHref,
+  logo: logoHref,
+  image: logoHref,
+  description: baseDescription,
+  email: "heritagerestoredabolition@gmail.com",
+  taxID: "39-3248627",
+  nonprofitStatus: "Nonprofit501c3",
+  areaServed: {
+    "@type": "State",
+    name: "Ohio",
+  },
+  sameAs: [
+    "https://www.youtube.com/@HeritageRestored",
+    "https://www.youtube.com/@HeritageRestoredStories",
+    "https://www.instagram.com/restoredheritage/",
+    "https://www.tiktok.com/@heritage_restored",
+    "https://x.com/HeritageRestord",
+  ],
+};
+
 // Capture all slot content and auto-link Bible refs
 const raw = Astro.slots.default ? await Astro.slots.render("default") : "";
 const processed = autoLinkBibleRefs(raw);
@@ -29,15 +63,15 @@ const processed = autoLinkBibleRefs(raw);
 
 <html class="theme-root">
   <head>
-    <title>{pageTitle}</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{documentTitle}</title>
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="MyWebSite" />  
+    <meta name="apple-mobile-web-app-title" content={siteName} />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={metaDescription} />
     <link rel="canonical" href={canonicalHref} />
     <meta property="og:site_name" content={siteName} />
@@ -46,10 +80,17 @@ const processed = autoLinkBibleRefs(raw);
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalHref} />
     <meta property="og:image" content={metaImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${siteName} logo`} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:image" content={metaImageUrl} />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(organizationSchema)}
+    />
 <!-- Safe Google Analytics Loader (handles blockers and failures) -->
 <script>
   (function () {
