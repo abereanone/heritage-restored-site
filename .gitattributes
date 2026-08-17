@@ -1,0 +1,12 @@
+# Normalize all text files to LF in both the repository and the working tree.
+# The repo is already uniformly LF; this keeps editors on Windows from
+# silently reintroducing CRLF and producing whole-file diffs.
+* text=auto eol=lf
+
+# Binary assets: never diffed or line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.pdf binary

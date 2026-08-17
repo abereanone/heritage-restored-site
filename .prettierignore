@@ -1,0 +1,14 @@
+node_modules
+dist
+.astro
+package-lock.json
+
+# Generated at build time by scripts/build-bible-cited.mjs
+src/generated
+
+# Source data, not hand-edited
+public/data
+src/data
+src/components/bookMap.json
+src/components/qa_data.json
+bsb-data-pipeline

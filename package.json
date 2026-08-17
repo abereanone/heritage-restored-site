@@ -6,6 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "build:bible": "node ./scripts/build-bible-cited.mjs",
     "seed:bsb": "node ./bsb-data-pipeline/scripts/prepare-bsb.mjs",
     "predev": "npm run build:bible",
@@ -19,6 +21,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "baseline-browser-mapping": "^2.10.25"
+    "baseline-browser-mapping": "^2.10.25",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1"
   }
 }
