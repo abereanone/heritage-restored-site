@@ -41,11 +41,12 @@ const people = rows
       link_url: (row.link_url ?? "").toString().trim(),
       link_label: (row.link_label ?? "").toString().trim(),
       photo_url: (row.photo_url ?? "").toString().trim(),
-      // Rendered but hidden; the ?showall=y script reveals these.
-      _hidden: (row.visible ?? "").toString().trim().toLowerCase() === "no",
       _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER,
     };
   })
+  // visible: "no" means the person is not rendered at all, so their details
+  // never reach the page source.
+  .filter((person) => (person.visible ?? "").toString().trim().toLowerCase() !== "no")
   .filter((person) => !allowed || allowed.has(person.name))
   .sort((a, b) => a._priority - b._priority);
 
@@ -58,11 +59,7 @@ const gridClass = ["people-grid", className].filter(Boolean).join(" ");
       const shouldTruncate = person.bio && person.bio.length > BIO_TRUNCATE_AT;
       const showBio = Boolean(person.bio) && !hideBio;
       return (
-        <div
-          class="person-card"
-          data-person-hidden={person._hidden ? "true" : undefined}
-          hidden={person._hidden}
-        >
+        <div class="person-card">
           <div class="person-photo">
             {photos[person.photo_url] ? (
               <Image
@@ -120,17 +117,6 @@ const gridClass = ["people-grid", className].filter(Boolean).join(" ");
 
 <script>
   function initPeople() {
-    // ?showall=y reveals people marked visible=no in the data.
-    const params = new URLSearchParams(window.location.search);
-    const raw = (params.get("showall") || "").trim().toLowerCase();
-    const showAll = raw === "y" || raw === "yes" || raw === "true" || raw === "1";
-
-    if (showAll) {
-      document
-        .querySelectorAll("[data-person-hidden]")
-        .forEach((card) => card.removeAttribute("hidden"));
-    }
-
     // The toggle ships hidden so that with JS disabled there is no dead button;
     // the truncated bio simply stands on its own.
     document.querySelectorAll("[data-bio-toggle]").forEach((button) => {

@@ -24,6 +24,13 @@ html.dark-mode {
   --blockquote-bg: rgba(255, 255, 255, 0.04);
 }
 
+/* The hidden attribute must beat component display rules. A class selector like
+   .person-card { display: flex } otherwise outranks the UA stylesheet's
+   [hidden] { display: none }, leaving hidden elements visible. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   font-family: var(--body-font);
   margin: 0;
