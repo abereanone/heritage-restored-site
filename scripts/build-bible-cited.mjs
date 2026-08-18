@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(currentDir, "..");
 const bookMapFile = path.join(rootDir, "src", "components", "bookMap.json");
+const chapterCountsFile = path.join(rootDir, "src", "components", "chapterCounts.json");
 const sourceBibleFile = path.join(rootDir, "bsb-data-pipeline", "bsb.json");
 const outputFile = path.join(rootDir, "src", "generated", "bible-cited.json");
 const chapterPreviewVerseLimit = 15;
@@ -386,7 +387,7 @@ async function listSourceFiles(dir) {
   return results;
 }
 
-function extractRawReferences(content, bookMap) {
+function extractRawReferences(content, bookMap, chapterCounts) {
   const refs = new Set();
 
   const bookPattern = Object.keys(bookMap)
@@ -478,6 +479,14 @@ function extractRawReferences(content, bookMap) {
       .replace(/\./g, "");
     const chapter = match[2] ?? "";
     if (singleChapterBooks.has(book)) continue;
+    // Same guard as src/utils/autoLinkBibleRefs.js: bookMap maps "hb" to
+    // Habakkuk, so "HB 370" would be collected as Habakkuk chapter 370.
+    const bookCode = bookMap[book] ?? null;
+    const chapterNumber = Number.parseInt(chapter, 10);
+    const maxChapter = bookCode ? chapterCounts[bookCode] : undefined;
+    if (maxChapter && (!Number.isFinite(chapterNumber) || chapterNumber > maxChapter)) {
+      continue;
+    }
     if (chapter) {
       refs.add(`${match[1]} ${chapter}`);
     }
@@ -487,12 +496,14 @@ function extractRawReferences(content, bookMap) {
 }
 
 async function run() {
-  const [bookMapRaw, bibleRaw] = await Promise.all([
+  const [bookMapRaw, chapterCountsRaw, bibleRaw] = await Promise.all([
     fs.readFile(bookMapFile, "utf8"),
+    fs.readFile(chapterCountsFile, "utf8"),
     fs.readFile(sourceBibleFile, "utf8"),
   ]);
 
   const bookMap = JSON.parse(bookMapRaw);
+  const chapterCounts = JSON.parse(chapterCountsRaw);
   const bible = JSON.parse(bibleRaw);
 
   const sourceFiles = (await Promise.all(sourceDirs.map((dir) => listSourceFiles(dir)))).flat();
@@ -500,7 +511,7 @@ async function run() {
 
   for (const file of sourceFiles) {
     const raw = await fs.readFile(file, "utf8");
-    const refs = extractRawReferences(raw, bookMap);
+    const refs = extractRawReferences(raw, bookMap, chapterCounts);
     refs.forEach((rawReference) => {
       const normalizedKey = normalizeReferenceChunk(bookMap, rawReference);
       if (!normalizedKey) {
@@ -543,6 +554,12 @@ async function run() {
   console.log(
     `Generated ${Object.keys(verses).length} cited verse lookups (${missingCount} unresolved references skipped).`,
   );
+
+  // missingReferences was collected but never surfaced, so an unresolvable
+  // citation was invisible in build logs. Name them.
+  if (missingReferences.length) {
+    console.log(`  unresolved: ${missingReferences.join(", ")}`);
+  }
 
   if (process.env.DEBUG_MISSING_BIBLE_REFS === "1" && missingReferences.length) {
     console.log("Unresolved references:");

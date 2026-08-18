@@ -6,3 +6,6 @@ dist
 /.astro/
 /flutter
 src/generated/bible-cited.json
+
+# Cloudflare build logs saved locally
+.wrangler/
