@@ -25,3 +25,9 @@ Committing locally is fine when the user asks for the work to be committed.
 
 Say it is ready, name the commits, and stop. Offer the push command for the
 user to run or approve. Do not run it for them.
+
+## Do not propose site content or design changes
+
+Wording, layout, footer links, homepage callouts, and which social links appear
+are the owner's call, not something to suggest improvements to. Stick to
+correctness, performance, accessibility, security, and build tooling.
