@@ -1,110 +1,124 @@
 ---
 const { dataUrl = "/data/featured-videos.json" } = Astro.props;
-const fallbackParams = new URLSearchParams({
-  list: "PLzfcgkHBc7S7QyXQbnQKHD609WZ15GJud",
-  rel: "0",
-  modestbranding: "1",
-});
+const fallbackPlaylistId = "PLzfcgkHBc7S7QyXQbnQKHD609WZ15GJud";
 ---
 
-<section class="featured-video" data-featured-video data-featured-video-url={dataUrl}>
+<section
+  class="featured-video"
+  data-featured-video
+  data-featured-video-url={dataUrl}
+  data-fallback-playlist={fallbackPlaylistId}
+>
   <div class="featured-video-frame" data-featured-video-frame>
-    <iframe
-      src={`https://www.youtube-nocookie.com/embed/videoseries?${fallbackParams.toString()}`}
-      title="YouTube playlist"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen
-    >
-    </iframe>
+    <button type="button" class="video-facade" data-video-facade hidden>
+      <span class="video-facade-play" aria-hidden="true"></span>
+      <span class="video-facade-label">Play video</span>
+    </button>
+    <noscript>
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/videoseries?list=${fallbackPlaylistId}&rel=0&modestbranding=1`}
+        title="YouTube playlist"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        loading="lazy"
+        allowfullscreen></iframe>
+    </noscript>
   </div>
   <p class="featured-video-note">The embedded video may not load if you are on a VPN.</p>
 </section>
 
 <script>
-  function buildEmbedUrl(video) {
+  function buildEmbedUrl(video, autoplay) {
     const type = String(video?.type || "video").toLowerCase();
+    const base = { rel: "0", modestbranding: "1" };
+    if (autoplay) base.autoplay = "1";
 
     if (type === "playlist" && video?.playlistId) {
-      const params = new URLSearchParams({
-        list: String(video.playlistId),
-        rel: "0",
-        modestbranding: "1",
-      });
+      const params = new URLSearchParams({ list: String(video.playlistId), ...base });
       return `https://www.youtube-nocookie.com/embed/videoseries?${params.toString()}`;
     }
 
     if ((type === "video" || type === "short") && video?.youtubeId) {
-      const params = new URLSearchParams({
-        rel: "0",
-        modestbranding: "1",
-      });
+      const params = new URLSearchParams(base);
       return `https://www.youtube-nocookie.com/embed/${video.youtubeId}?${params.toString()}`;
     }
 
     return "";
   }
 
-  function pickVideo(videos) {
-    const validVideos = videos.filter((video) => buildEmbedUrl(video));
-    if (!validVideos.length) {
-      return null;
-    }
-
-    return validVideos[Math.floor(Math.random() * validVideos.length)];
+  // Playlists have no single thumbnail, so only real videos get a poster.
+  function thumbnailUrl(video) {
+    if (!video?.youtubeId) return "";
+    return `https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`;
   }
 
-  function renderFeaturedVideo(root, video) {
+  function pickVideo(videos) {
+    const valid = videos.filter((video) => buildEmbedUrl(video, false));
+    if (!valid.length) return null;
+    return valid[Math.floor(Math.random() * valid.length)];
+  }
+
+  function mountFacade(root, video) {
     const frame = root.querySelector("[data-featured-video-frame]");
-    if (!frame) {
-      return;
+    const facade = root.querySelector("[data-video-facade]");
+    if (!frame || !facade) return;
+
+    const embedUrl = buildEmbedUrl(video, true);
+    if (!embedUrl) return;
+
+    const title = String(video?.title || "Featured video");
+    const isShort = String(video?.type || "").toLowerCase() === "short";
+    frame.classList.toggle("is-short", isShort);
+
+    const poster = thumbnailUrl(video);
+    if (poster) {
+      facade.style.backgroundImage = `url("${poster}")`;
+      facade.classList.add("has-poster");
     }
 
-    const embedUrl = buildEmbedUrl(video);
-    if (!embedUrl) {
-      return;
-    }
+    facade.setAttribute("aria-label", `Play: ${title}`);
+    facade.querySelector(".video-facade-label").textContent = title;
+    facade.hidden = false;
 
-    frame.classList.toggle("is-short", String(video?.type || "").toLowerCase() === "short");
-    frame.innerHTML = "";
-
-    const iframe = document.createElement("iframe");
-    iframe.src = embedUrl;
-    iframe.title = String(video?.title || "Featured video");
-    iframe.allow =
-      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-    iframe.referrerPolicy = "strict-origin-when-cross-origin";
-    iframe.allowFullscreen = true;
-    iframe.style.position = "absolute";
-    iframe.style.inset = "0";
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "0";
-    frame.append(iframe);
+    facade.addEventListener(
+      "click",
+      () => {
+        const iframe = document.createElement("iframe");
+        iframe.src = embedUrl;
+        iframe.title = title;
+        iframe.allow =
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        iframe.allowFullscreen = true;
+        facade.replaceWith(iframe);
+      },
+      { once: true },
+    );
   }
 
   function initFeaturedVideos() {
     document.querySelectorAll("[data-featured-video]").forEach((root) => {
-      if (root.dataset.featuredVideoState === "ready") {
-        return;
-      }
-
+      if (root.dataset.featuredVideoState === "ready") return;
       root.dataset.featuredVideoState = "ready";
+
       const dataUrl = root.getAttribute("data-featured-video-url") || "/data/featured-videos.json";
+      const fallback = {
+        type: "playlist",
+        playlistId: root.getAttribute("data-fallback-playlist"),
+        title: "Heritage Restored playlist",
+      };
 
       fetch(dataUrl)
         .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Unable to load ${dataUrl}`);
-          }
+          if (!response.ok) throw new Error(`Unable to load ${dataUrl}`);
           return response.json();
         })
         .then((videos) => {
-          const selectedVideo = Array.isArray(videos) ? pickVideo(videos) : null;
-          renderFeaturedVideo(root, selectedVideo);
+          const selected = Array.isArray(videos) ? pickVideo(videos) : null;
+          mountFacade(root, selected || fallback);
         })
         .catch(() => {
-          // Keep the server-rendered fallback playlist.
+          mountFacade(root, fallback);
         });
     });
   }
@@ -149,12 +163,75 @@ const fallbackParams = new URLSearchParams({
     border: 0;
   }
 
-  .featured-video-frame p {
+  /* Click-to-play poster. Until it is clicked the page loads no YouTube
+     JavaScript at all, only this one thumbnail image. */
+  .video-facade {
+    position: absolute;
+    inset: 0;
     display: grid;
-    min-height: inherit;
-    margin: 0;
-    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 1rem 1.25rem;
+    align-content: end;
+    justify-items: center;
+    gap: 0.75rem;
+    border: 0;
+    cursor: pointer;
+    background-color: #111;
+    background-position: center;
+    background-size: cover;
     color: #fff;
+    font: inherit;
+    text-align: center;
+  }
+
+  .video-facade.has-poster::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0.75) 100%);
+  }
+
+  .video-facade > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .video-facade-play {
+    width: 68px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(18, 18, 18, 0.82);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    justify-self: center;
+    align-self: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .video-facade-play::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-38%, -50%);
+    border-style: solid;
+    border-width: 10px 0 10px 17px;
+    border-color: transparent transparent transparent #fff;
+  }
+
+  .video-facade:hover .video-facade-play,
+  .video-facade:focus-visible .video-facade-play {
+    background: #cc0000;
+  }
+
+  .video-facade-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   }
 
   .featured-video-note {

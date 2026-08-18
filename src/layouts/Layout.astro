@@ -1,5 +1,6 @@
 ---
 import { autoLinkBibleRefs } from "../utils/autoLinkBibleRefs.js";
+import "../styles/global.css";
 
 const siteName = "Heritage Restored";
 const { title, description: propDescription, image: propImage } = Astro.props;
@@ -158,7 +159,6 @@ const processed = autoLinkBibleRefs(raw);
         }
       }
     </script>
-    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body id="top">
     <a class="skip-link" href="#main">Skip to main content</a>

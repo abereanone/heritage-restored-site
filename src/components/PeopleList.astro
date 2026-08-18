@@ -1,5 +1,17 @@
 ---
+import { Image } from "astro:assets";
+
 const { people: rows = [], filterNames, hideBio = false, class: className = "" } = Astro.props;
+
+// Headshots live in src/ so Astro can resize and re-encode them. Keyed by the
+// bare filename that people.json stores in photo_url.
+const photoModules = import.meta.glob("../images/people/*.{jpg,jpeg,png,webp}", {
+  eager: true,
+  import: "default",
+});
+const photos = Object.fromEntries(
+  Object.entries(photoModules).map(([path, mod]) => [path.split("/").pop(), mod]),
+);
 
 const BIO_TRUNCATE_AT = 350;
 const BIO_PREVIEW_LENGTH = 100;
@@ -52,12 +64,11 @@ const gridClass = ["people-grid", className].filter(Boolean).join(" ");
           hidden={person._hidden}
         >
           <div class="person-photo">
-            {person.photo_url ? (
-              <img
-                src={`/${person.photo_url}`}
+            {photos[person.photo_url] ? (
+              <Image
+                src={photos[person.photo_url]}
                 alt={person.name || "Person"}
-                width="165"
-                height="165"
+                width={330}
                 loading="lazy"
               />
             ) : (

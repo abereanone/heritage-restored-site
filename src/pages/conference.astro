@@ -1,5 +1,9 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import loganRamsey from "../images/people/loganramsey.jpg";
+import elijahThompson from "../images/people/elijahthompson.jpg";
+import michaelCoughlin from "../images/people/michaelcoughlin.jpg";
 ---
 
 <Layout
@@ -93,13 +97,7 @@ import Layout from "../layouts/Layout.astro";
       <div class="people-grid conference-speakers">
         <div class="person-card">
           <div class="person-photo">
-            <img
-              src="/loganramsey.jpg"
-              alt="Pastor Logan J. Ramsey"
-              width="165"
-              height="165"
-              loading="lazy"
-            />
+            <Image src={loganRamsey} alt="Pastor Logan J. Ramsey" width={330} loading="lazy" />
           </div>
           <h2>Session 1</h2>
           <p><strong>Pastor Logan J. Ramsey</strong></p>
@@ -112,13 +110,7 @@ import Layout from "../layouts/Layout.astro";
 
         <div class="person-card">
           <div class="person-photo">
-            <img
-              src="/elijahthompson.jpg"
-              alt="Elijah Thompson"
-              width="165"
-              height="165"
-              loading="lazy"
-            />
+            <Image src={elijahThompson} alt="Elijah Thompson" width={330} loading="lazy" />
           </div>
           <h2>Session 2</h2>
           <p><strong>Elijah Thompson</strong></p>
@@ -131,13 +123,7 @@ import Layout from "../layouts/Layout.astro";
 
         <div class="person-card">
           <div class="person-photo">
-            <img
-              src="/michaelcoughlin.jpg"
-              alt="Michael Coughlin"
-              width="165"
-              height="165"
-              loading="lazy"
-            />
+            <Image src={michaelCoughlin} alt="Michael Coughlin" width={330} loading="lazy" />
           </div>
           <h2>Session 3</h2>
           <p><strong>Michael Coughlin</strong></p>
