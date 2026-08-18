@@ -14,6 +14,9 @@ const sourceDirs = [
   path.join(rootDir, "src", "components"),
   path.join(rootDir, "src", "layouts"),
   path.join(rootDir, "src", "utils"),
+  // people.json and friends carry verse references inside bios and link text,
+  // and those are auto-linked on the page, so they need verse data too.
+  path.join(rootDir, "src", "data"),
 ];
 
 const sourceExtensions = new Set([".astro", ".md", ".mdx", ".js", ".jsx", ".ts", ".tsx", ".json"]);

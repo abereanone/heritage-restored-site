@@ -1,4 +1,22 @@
 ﻿import bookMap from "../components/bookMap.json";
+import chapterCounts from "../components/chapterCounts.json";
+
+// Short abbreviations collide with everyday initialisms: bookMap maps "hb" to
+// Habakkuk, so "HB 370" (an Ohio bill) would otherwise link as Habakkuk 370.
+// Rejecting chapters a book does not have filters those out generically.
+function resolveBookCode(book) {
+  const cleaned = String(book).toLowerCase().replace(/\./g, "");
+  return bookMap[cleaned] ?? bookMap[String(book).toLowerCase()] ?? null;
+}
+
+function isPlausibleChapter(book, chapter) {
+  const code = resolveBookCode(book);
+  if (!code) return false;
+  const max = chapterCounts[code];
+  const n = Number.parseInt(chapter, 10);
+  if (!Number.isFinite(n) || n < 1) return false;
+  return max ? n <= max : true;
+}
 
 const singleChapterBooks = new Set([
   "obadiah",
@@ -48,6 +66,10 @@ function linkBibleRefsText(text) {
   const withChapterOnly = text.replace(chapterOnlyRegex, (match, book, chapter) => {
     const normalizedBook = String(book).toLowerCase().replace(/\./g, "");
     if (singleChapterBooks.has(normalizedBook)) {
+      return match;
+    }
+
+    if (!isPlausibleChapter(book, chapter)) {
       return match;
     }
 
@@ -111,6 +133,9 @@ function linkBibleRefsText(text) {
   const withSingles = withSingleChapterSingles.replace(
     singleVerseRegex,
     (match, book, chapter, verse) => {
+      if (!isPlausibleChapter(book, chapter)) {
+        return match;
+      }
       const ref = `${book} ${chapter}:${verse}`;
       return `<span class="bible-ref" data-ref="${ref}">${match}</span>`;
     },
