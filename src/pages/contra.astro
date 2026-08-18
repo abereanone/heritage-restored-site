@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Contra from "../components/Contra.jsx";
+import Contra from "../components/Contra.astro";
 import contraceptives from "../data/contraceptives.json";
 ---
 
@@ -43,6 +43,6 @@ import contraceptives from "../data/contraceptives.json";
       </li>
     </ol>
   </ul>
-  <Contra client:load rows={contraceptives} />
+  <Contra rows={contraceptives} />
   <p class="back-to-top"><a href="#top">↑ Back to top</a></p>
 </Layout>

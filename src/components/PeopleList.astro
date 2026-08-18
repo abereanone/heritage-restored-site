@@ -1,0 +1,147 @@
+---
+const { people: rows = [], filterNames, hideBio = false, class: className = "" } = Astro.props;
+
+const BIO_TRUNCATE_AT = 350;
+const BIO_PREVIEW_LENGTH = 100;
+
+function initialsFor(name) {
+  return (name ?? "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("");
+}
+
+const allowed =
+  Array.isArray(filterNames) && filterNames.length
+    ? new Set(filterNames.map((name) => (name ?? "").toString().trim()).filter(Boolean))
+    : null;
+
+const people = rows
+  .map((row) => {
+    const priority = parseInt((row.priority ?? "").toString().trim(), 10);
+    return {
+      ...row,
+      name: (row.name ?? "").toString().trim(),
+      role: (row.role ?? "").toString().trim(),
+      bio: (row.bio ?? "").toString().trim(),
+      link_url: (row.link_url ?? "").toString().trim(),
+      link_label: (row.link_label ?? "").toString().trim(),
+      photo_url: (row.photo_url ?? "").toString().trim(),
+      // Rendered but hidden; the ?showall=y script reveals these.
+      _hidden: (row.visible ?? "").toString().trim().toLowerCase() === "no",
+      _priority: Number.isFinite(priority) ? priority : Number.MAX_SAFE_INTEGER,
+    };
+  })
+  .filter((person) => !allowed || allowed.has(person.name))
+  .sort((a, b) => a._priority - b._priority);
+
+const gridClass = ["people-grid", className].filter(Boolean).join(" ");
+---
+
+<div class={gridClass} data-people-grid>
+  {
+    people.map((person) => {
+      const shouldTruncate = person.bio && person.bio.length > BIO_TRUNCATE_AT;
+      const showBio = Boolean(person.bio) && !hideBio;
+      return (
+        <div
+          class="person-card"
+          data-person-hidden={person._hidden ? "true" : undefined}
+          hidden={person._hidden}
+        >
+          <div class="person-photo">
+            {person.photo_url ? (
+              <img
+                src={`/${person.photo_url}`}
+                alt={person.name || "Person"}
+                width="165"
+                height="165"
+                loading="lazy"
+              />
+            ) : (
+              <span class="person-photo-initials" aria-hidden="true">
+                {initialsFor(person.name)}
+              </span>
+            )}
+          </div>
+          {person.name && <h2>{person.name}</h2>}
+          {person.role && (
+            <p>
+              <strong>{person.role}</strong>
+            </p>
+          )}
+
+          {showBio && (
+            <p class="person-bio">
+              <span data-bio-text data-bio-full={shouldTruncate ? person.bio : undefined}>
+                {shouldTruncate
+                  ? `${person.bio.substring(0, BIO_PREVIEW_LENGTH)} ... `
+                  : person.bio}
+              </span>
+              {shouldTruncate && (
+                <button
+                  type="button"
+                  class="inline-link-button"
+                  data-bio-toggle
+                  aria-expanded="false"
+                  hidden
+                >
+                  Read more
+                </button>
+              )}
+            </p>
+          )}
+
+          {person.link_url && (
+            <p>
+              <a href={person.link_url} target="_blank" rel="noopener noreferrer">
+                {person.link_label || "Learn more"}
+              </a>
+            </p>
+          )}
+        </div>
+      );
+    })
+  }
+</div>
+
+<script>
+  function initPeople() {
+    // ?showall=y reveals people marked visible=no in the data.
+    const params = new URLSearchParams(window.location.search);
+    const raw = (params.get("showall") || "").trim().toLowerCase();
+    const showAll = raw === "y" || raw === "yes" || raw === "true" || raw === "1";
+
+    if (showAll) {
+      document
+        .querySelectorAll("[data-person-hidden]")
+        .forEach((card) => card.removeAttribute("hidden"));
+    }
+
+    // The toggle ships hidden so that with JS disabled there is no dead button;
+    // the truncated bio simply stands on its own.
+    document.querySelectorAll("[data-bio-toggle]").forEach((button) => {
+      if (button.dataset.bioReady) return;
+      button.dataset.bioReady = "true";
+      button.hidden = false;
+
+      const text = button.parentElement?.querySelector("[data-bio-text]");
+      if (!text) return;
+
+      const full = text.dataset.bioFull || "";
+      const short = text.textContent || "";
+
+      button.addEventListener("click", () => {
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        text.textContent = expanded ? short : full;
+        button.setAttribute("aria-expanded", String(!expanded));
+        button.textContent = expanded ? "Read more" : "Show less";
+      });
+    });
+  }
+
+  initPeople();
+  document.addEventListener("astro:page-load", initPeople);
+</script>
