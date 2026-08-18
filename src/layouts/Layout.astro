@@ -1,5 +1,7 @@
 ---
+import { Image } from "astro:assets";
 import { autoLinkBibleRefs } from "../utils/autoLinkBibleRefs.js";
+import siteLogo from "../images/logo.webp";
 import "../styles/global.css";
 
 const siteName = "Heritage Restored";
@@ -166,7 +168,13 @@ const processed = autoLinkBibleRefs(raw);
       <button id="theme-toggle" class="theme-toggle-button" type="button">Dark Mode</button>
       <div class="logo-container">
         <a href="/">
-          <img src="/HRLOGO.png" alt="Heritage Restored Logo" class="site-logo" />
+          <Image
+            src={siteLogo}
+            alt="Heritage Restored Logo"
+            class="site-logo"
+            width={380}
+            loading="eager"
+          />
         </a>
       </div>
       <nav aria-label="Main">

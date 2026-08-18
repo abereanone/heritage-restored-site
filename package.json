@@ -11,7 +11,9 @@
     "build:bible": "node ./scripts/build-bible-cited.mjs",
     "seed:bsb": "node ./bsb-data-pipeline/scripts/prepare-bsb.mjs",
     "predev": "npm run build:bible",
-    "prebuild": "npm run build:bible"
+    "prebuild": "npm run build:bible",
+    "check": "node ./scripts/check-output.mjs",
+    "verify": "npm run build && npm run check"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
