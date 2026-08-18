@@ -276,25 +276,24 @@ html.dark-mode .inline-link-button:focus {
   }
 }
 
-/* ==== Dark‑mode via media query (optional fallback) ==== */
-@media (prefers-color-scheme: dark) {
-  header,
-  footer {
-    background: #000;
-  }
-  nav a {
-    color: #eee;
-  }
-  .category h2 {
-    color: var(--heading-dark);
-  }
-  .columns a {
-    color: var(--link-dark);
-  }
-  .columns a:hover,
-  .columns a:focus {
-    color: var(--link-dark-h);
-  }
+/* ==== Dark mode ====
+   Driven entirely by the .dark-mode class, which the inline script in the head
+   sets from localStorage or, absent a stored choice, the OS preference. A bare
+   prefers-color-scheme block was previously fighting the toggle: it darkened the
+   header and footer from the OS setting even when the visitor had chosen light. */
+html.dark-mode header,
+html.dark-mode footer {
+  background: #000;
+}
+html.dark-mode .category h2 {
+  color: var(--heading-dark);
+}
+html.dark-mode .columns a {
+  color: var(--link-dark);
+}
+html.dark-mode .columns a:hover,
+html.dark-mode .columns a:focus {
+  color: var(--link-dark-h);
 }
 
 /* ==== Overrides for mobile DuckDuckGo ==== */
@@ -320,12 +319,21 @@ html.dark-mode .inline-link-button:focus {
   padding-top: 0.5rem;
 }
 
-/* Always render contra‑card text in black for readability */
+/* Contra cards carry their own light backgrounds in both themes, so text stays
+   black regardless of the active theme. */
 .contra-card {
   color: #000;
 }
 html.dark-mode .contra-card {
   color: #000;
+}
+
+/* The crimson "abortive" card is dark enough that black text lands at 4.21:1,
+   under the 4.5:1 AA floor. White text on the same crimson is 4.99:1, which
+   passes while keeping the strong red category signal. */
+.contra-card.abortive,
+html.dark-mode .contra-card.abortive {
+  color: #fff;
 }
 
 /* ==== Resources Page Styles ==== */
@@ -472,6 +480,39 @@ blockquote footer {
   }
 }
 /* Accessibility helpers */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1100;
+  padding: 0.75rem 1.25rem;
+  background: #fff;
+  color: #111317;
+  font-weight: 700;
+  border-radius: 0 0 6px 0;
+}
+.skip-link:focus {
+  left: 0;
+  color: #111317;
+}
+
+/* Current page indicator in the main nav */
+nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 2px;
+  font-weight: 700;
+}
+
+/* Visible keyboard focus everywhere. */
+a:focus-visible,
+button:focus-visible,
+.bible-ref:focus-visible {
+  outline: 3px solid #4393e4;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

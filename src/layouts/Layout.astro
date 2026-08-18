@@ -1,5 +1,4 @@
 ---
-import BibleHover from "../components/bibleHover.jsx";
 import { autoLinkBibleRefs } from "../utils/autoLinkBibleRefs.js";
 
 const siteName = "Heritage Restored";
@@ -48,16 +47,45 @@ const organizationSchema = {
   ],
 };
 
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/resources", label: "Resources" },
+  { href: "/people", label: "People" },
+  { href: "/beliefs", label: "Beliefs" },
+  { href: "/plm_abo_ai_compare", label: "Compare" },
+  { href: "/aiivf", label: "IVF" },
+  { href: "/contact", label: "Contact" },
+  { href: "/donate", label: "Donate" },
+];
+// Trailing slashes are stripped so /people and /people/ both match.
+const currentPath = "/" + Astro.url.pathname.replace(/^\/+|\/+$/g, "");
+
 // Capture all slot content and auto-link Bible refs
 const raw = Astro.slots.default ? await Astro.slots.render("default") : "";
 const processed = autoLinkBibleRefs(raw);
 ---
 
-<html class="theme-root">
+<html lang="en" class="theme-root">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{documentTitle}</title>
+    {/* Must run before first paint, or dark-mode visitors get a white flash. */}
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var prefersDark =
+            window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var theme = stored || (prefersDark ? "dark" : "light");
+          if (theme === "dark") {
+            document.documentElement.classList.add("dark-mode");
+          }
+        } catch (e) {
+          /* localStorage unavailable (private mode); fall through to light. */
+        }
+      })();
+    </script>
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -133,23 +161,23 @@ const processed = autoLinkBibleRefs(raw);
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body id="top">
+    <a class="skip-link" href="#main">Skip to main content</a>
     <header>
-      <button id="theme-toggle" class="theme-toggle-button">Dark Mode</button>
+      <button id="theme-toggle" class="theme-toggle-button" type="button">Dark Mode</button>
       <div class="logo-container">
         <a href="/">
           <img src="/HRLOGO.png" alt="Heritage Restored Logo" class="site-logo" />
         </a>
       </div>
-      <nav>
+      <nav aria-label="Main">
         <div>
-          <a href="/">Home</a>
-          <a href="/resources">Resources</a>
-          <a href="/people">People</a>
-          <a href="/beliefs">Beliefs</a>
-          <a href="/plm_abo_ai_compare">Compare</a>
-          <a href="/aiivf">IVF</a>
-          <a href="/contact">Contact</a>
-          <a href="/donate">Donate</a>
+          {
+            navLinks.map((link) => (
+              <a href={link.href} aria-current={currentPath === link.href ? "page" : undefined}>
+                {link.label}
+              </a>
+            ))
+          }
         </div>
         <div class="social">
           <a href="https://www.youtube.com/@HeritageRestored" target="_blank" aria-label="YouTube">
@@ -208,8 +236,8 @@ const processed = autoLinkBibleRefs(raw);
       </nav>
     </header>
 
-    <main>
-      <!-- ✅ Processed content with auto-linked refs -->
+    <main id="main">
+      <!-- Processed content with auto-linked refs -->
       <div set:html={processed} />
     </main>
 
@@ -226,28 +254,191 @@ const processed = autoLinkBibleRefs(raw);
       </p>
     </footer>
 
-    <!-- Dark mode script -->
     <script>
+      // Theme toggle. The class is already set by the inline head script; this
+      // only syncs the button label and persists an explicit choice.
       const toggleBtn = document.getElementById("theme-toggle");
       const root = document.documentElement;
-      function applyTheme(theme) {
-        if (theme === "dark") {
-          root.classList.add("dark-mode");
-          toggleBtn.textContent = "Light Mode";
-        } else {
-          root.classList.remove("dark-mode");
-          toggleBtn.textContent = "Dark Mode";
-        }
+
+      function syncLabel() {
+        const isDark = root.classList.contains("dark-mode");
+        toggleBtn.textContent = isDark ? "Light Mode" : "Dark Mode";
+        toggleBtn.setAttribute("aria-pressed", String(isDark));
       }
-      const saved = localStorage.getItem("theme") || "light";
-      applyTheme(saved);
+
+      syncLabel();
+
       toggleBtn.addEventListener("click", () => {
-        const newTheme = root.classList.contains("dark-mode") ? "light" : "dark";
-        applyTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
+        const nextTheme = root.classList.contains("dark-mode") ? "light" : "dark";
+        root.classList.toggle("dark-mode", nextTheme === "dark");
+        try {
+          localStorage.setItem("theme", nextTheme);
+        } catch (e) {
+          /* ignore */
+        }
+        syncLabel();
       });
+
+      // Follow the OS while the visitor has not made an explicit choice.
+      if (window.matchMedia) {
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+          let stored = null;
+          try {
+            stored = localStorage.getItem("theme");
+          } catch (e) {
+            /* ignore */
+          }
+          if (stored) return;
+          root.classList.toggle("dark-mode", event.matches);
+          syncLabel();
+        });
+      }
     </script>
 
-    <BibleHover client:load />
+    <script>
+      import { normalizeReference } from "../utils/normalizeRef.js";
+      import { getVerseData } from "../utils/bibleClient.js";
+
+      // Bible reference tooltips. Works with mouse, keyboard, and touch: refs are
+      // exposed as buttons, open on hover/focus, and pin open on click/Enter/Space.
+      let tooltip = null;
+      let activeRef = null;
+      let pinned = false;
+
+      function ensureTooltip() {
+        if (tooltip) return tooltip;
+        tooltip = document.createElement("div");
+        tooltip.className = "bible-tooltip";
+        tooltip.id = "bible-tooltip";
+        tooltip.setAttribute("role", "tooltip");
+        document.body.appendChild(tooltip);
+        return tooltip;
+      }
+
+      function positionTooltip(el) {
+        const tip = ensureTooltip();
+        const rect = el.getBoundingClientRect();
+
+        tip.style.visibility = "hidden";
+        tip.style.display = "block";
+        const tipWidth = tip.offsetWidth;
+        const tipHeight = tip.offsetHeight;
+        tip.style.visibility = "visible";
+
+        let left = rect.left + window.scrollX;
+        const maxLeft = window.innerWidth - tipWidth - 10;
+        if (left > maxLeft) left = maxLeft;
+        if (left < 10) left = 10;
+
+        // Flip above the reference when there is no room below.
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const top =
+          spaceBelow < tipHeight + 12
+            ? rect.top + window.scrollY - tipHeight - 6
+            : rect.bottom + window.scrollY + 6;
+
+        tip.style.left = `${left}px`;
+        tip.style.top = `${Math.max(top, window.scrollY + 4)}px`;
+      }
+
+      function hideTooltip() {
+        if (!tooltip) return;
+        tooltip.style.display = "none";
+        if (activeRef) {
+          activeRef.setAttribute("aria-expanded", "false");
+          activeRef.removeAttribute("aria-describedby");
+        }
+        activeRef = null;
+        pinned = false;
+      }
+
+      async function showTooltip(el) {
+        const tip = ensureTooltip();
+
+        if (activeRef && activeRef !== el) {
+          activeRef.setAttribute("aria-expanded", "false");
+          activeRef.removeAttribute("aria-describedby");
+        }
+        activeRef = el;
+
+        if (!el.dataset.verseText) {
+          try {
+            const verse = await getVerseData(normalizeReference(el.dataset.ref));
+            el.dataset.verseText = verse ? `${verse.text} (${verse.version})` : "Verse not found";
+          } catch (err) {
+            el.dataset.verseText = "Verse not found";
+          }
+          // A different ref may have been opened while this was resolving.
+          if (activeRef !== el) return;
+        }
+
+        tip.textContent = el.dataset.verseText;
+        el.setAttribute("aria-expanded", "true");
+        el.setAttribute("aria-describedby", "bible-tooltip");
+        positionTooltip(el);
+      }
+
+      function initBibleRefs() {
+        document.querySelectorAll(".bible-ref").forEach((el) => {
+          if (el.dataset.bibleRefReady) return;
+          el.dataset.bibleRefReady = "true";
+
+          // role=button rather than a real <button> so refs stay valid inside
+          // links and other inline content produced by autoLinkBibleRefs.
+          el.setAttribute("role", "button");
+          el.setAttribute("tabindex", "0");
+          el.setAttribute("aria-expanded", "false");
+
+          el.addEventListener("mouseenter", () => {
+            if (!pinned) showTooltip(el);
+          });
+          el.addEventListener("mouseleave", () => {
+            if (!pinned) hideTooltip();
+          });
+          el.addEventListener("focus", () => showTooltip(el));
+          el.addEventListener("blur", () => {
+            if (!pinned) hideTooltip();
+          });
+
+          el.addEventListener("click", (event) => {
+            event.preventDefault();
+            if (pinned && activeRef === el) {
+              hideTooltip();
+            } else {
+              pinned = true;
+              showTooltip(el);
+            }
+          });
+
+          el.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              el.click();
+            } else if (event.key === "Escape") {
+              hideTooltip();
+              el.blur();
+            }
+          });
+        });
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") hideTooltip();
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!pinned || !activeRef) return;
+        if (!activeRef.contains(event.target) && !(tooltip && tooltip.contains(event.target))) {
+          hideTooltip();
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        if (activeRef) positionTooltip(activeRef);
+      });
+
+      initBibleRefs();
+      document.addEventListener("astro:page-load", initBibleRefs);
+    </script>
   </body>
 </html>
