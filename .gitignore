@@ -9,3 +9,6 @@ src/generated/bible-cited.json
 
 # Cloudflare build logs saved locally
 .wrangler/
+
+# Nonprofit governance / filing documents — never commit (contains EIN, home addresses)
+/.orgAdmin/
