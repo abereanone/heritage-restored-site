@@ -16,8 +16,8 @@
     "verify": "npm run build && npm run check"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.3",
-    "astro": "^6.2.1"
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.0"
   },
   "devDependencies": {
     "baseline-browser-mapping": "^2.10.25",
