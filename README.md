@@ -28,4 +28,4 @@ Requires Node.js 22.22.0+ (`.node-version` pins 22).
 - `src/data/` - `people.json`, `resources.json`, `contraceptives.json`. `data-exports/*.csv` are spreadsheet exports of the same lists; nothing reads them at build time.
 - `src/components/` - shared components plus `bookMap.json` and `chapterCounts.json` used for verse linking.
 - `public/` - static files copied as-is.
-- `.github/workflows/ci.yml` - CI build.
+- `.github/workflows/ci.yml` - CI: format check and build.
