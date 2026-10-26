@@ -184,6 +184,8 @@ if (fs.existsSync(manifestPath)) {
 // ---------------------------------------------------------------------------
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, "utf8");
+  // Pages kept out of search (the generated site-stats.html) need no description or canonical.
+  if (/<meta name="robots" content="noindex/.test(html)) continue;
   if (!/<html[^>]+lang=/.test(html)) fail("seo", `${rel(file)} has no lang attribute`);
   if (!/<title>[^<]+<\/title>/.test(html))
     fail("seo", `${rel(file)} has an empty or missing title`);
