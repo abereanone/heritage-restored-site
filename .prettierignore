@@ -12,3 +12,6 @@ src/data
 src/components/bookMap.json
 src/components/qa_data.json
 bsb-data-pipeline
+
+# Generated monthly by site-stats/scripts/publish-pages.ps1
+public/site-stats.html

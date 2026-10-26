@@ -13,14 +13,14 @@ Requires Node.js 22.22.0+ (`.node-version` pins 22).
 
 ## Scripts
 
-| Script | What it does |
-|---|---|
-| `npm run dev` / `build` / `preview` | Astro dev server, production build to `dist/`, local preview of the build. `dev` and `build` run `build:bible` first. |
-| `npm run build:bible` | Runs `scripts/build-bible-cited.mjs`: scans `src/pages`, `components`, `layouts`, `utils` and `data` for Bible references and writes the verse text they need (from `bsb-data-pipeline/bsb.json`) to `src/generated/bible-cited.json` for the hover tooltips. The output is generated and git-ignored. |
-| `npm run seed:bsb` | Normalises `bsb-data-pipeline/bsb.json` in place (see `bsb-data-pipeline/README.md`). Rarely needed. |
-| `npm run check` | Runs `scripts/check-output.mjs` against an existing `dist/`: no mis-linked verse references, hidden people not rendered, referenced assets exist. Each check exists because that bug once shipped. |
-| `npm run verify` | `build` then `check`. Use before pushing. |
-| `npm run format` / `format:check` | Prettier, write or check only. |
+| Script                              | What it does                                                                                                                                                                                                                                                                                           |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm run dev` / `build` / `preview` | Astro dev server, production build to `dist/`, local preview of the build. `dev` and `build` run `build:bible` first.                                                                                                                                                                                  |
+| `npm run build:bible`               | Runs `scripts/build-bible-cited.mjs`: scans `src/pages`, `components`, `layouts`, `utils` and `data` for Bible references and writes the verse text they need (from `bsb-data-pipeline/bsb.json`) to `src/generated/bible-cited.json` for the hover tooltips. The output is generated and git-ignored. |
+| `npm run seed:bsb`                  | Normalises `bsb-data-pipeline/bsb.json` in place (see `bsb-data-pipeline/README.md`). Rarely needed.                                                                                                                                                                                                   |
+| `npm run check`                     | Runs `scripts/check-output.mjs` against an existing `dist/`: no mis-linked verse references, hidden people not rendered, referenced assets exist. Each check exists because that bug once shipped.                                                                                                     |
+| `npm run verify`                    | `build` then `check`. Use before pushing.                                                                                                                                                                                                                                                              |
+| `npm run format` / `format:check`   | Prettier, write or check only.                                                                                                                                                                                                                                                                         |
 
 ## Where things are
 
