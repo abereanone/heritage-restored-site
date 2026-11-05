@@ -376,7 +376,10 @@ const processed = autoLinkBibleRefs(raw);
         if (!el.dataset.verseText) {
           try {
             const verse = await getVerseData(normalizeReference(el.dataset.ref));
-            el.dataset.verseText = verse ? `${verse.text} (${verse.version})` : "Verse not found";
+            const label = String(el.dataset.ref || "").trim();
+            el.dataset.verseText = verse
+              ? `${label ? `${label} - ` : ""}${verse.text} (${verse.version})`
+              : "Verse not found";
           } catch (err) {
             el.dataset.verseText = "Verse not found";
           }

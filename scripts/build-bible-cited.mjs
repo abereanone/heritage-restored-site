@@ -266,7 +266,8 @@ function resolveVerseData(bible, normalizedReference) {
       version = parts.version;
     }
 
-    verseTextParts.push(`${verseValue} ${cleaned}`);
+    // The tooltip already shows the reference, so the first verse gets no number.
+    verseTextParts.push(verseTextParts.length ? `${verseValue} ${cleaned}` : cleaned);
   }
 
   function appendSegment(chapterValue, segment) {
