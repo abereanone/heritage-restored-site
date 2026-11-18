@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/go-links.mjs dist --base /go/ --own heritagerestored.org,www.heritagerestored.org",
     "preview": "astro preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
