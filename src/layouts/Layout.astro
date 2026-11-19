@@ -310,6 +310,7 @@ const processed = autoLinkBibleRefs(raw);
     <script>
       import { normalizeReference } from "../utils/normalizeRef.js";
       import { getVerseData } from "../utils/bibleClient.js";
+      import { setVerseText } from "../utils/pluralYou.js";
 
       // Bible reference tooltips. Works with mouse, keyboard, and touch: refs are
       // exposed as buttons, open on hover/focus, and pin open on click/Enter/Space.
@@ -387,7 +388,7 @@ const processed = autoLinkBibleRefs(raw);
           if (activeRef !== el) return;
         }
 
-        tip.textContent = el.dataset.verseText;
+        setVerseText(tip, el.dataset.verseText);
         el.setAttribute("aria-expanded", "true");
         el.setAttribute("aria-describedby", "bible-tooltip");
         positionTooltip(el);
