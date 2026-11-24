@@ -111,47 +111,6 @@ const processed = autoLinkBibleRefs(raw);
     <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:image" content={metaImageUrl} />
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
-    <!-- Safe Google Analytics Loader (handles blockers and failures) -->
-    <script>
-      (function () {
-        function initAnalytics() {
-          window.dataLayer = window.dataLayer || [];
-          function gtag() {
-            dataLayer.push(arguments);
-          }
-          window.gtag = gtag;
-
-          gtag("js", new Date());
-          gtag("config", "G-M5J5WYS3VJ");
-        }
-
-        function loadAnalytics() {
-          var script = document.createElement("script");
-          script.src = "https://www.googletagmanager.com/gtag/js?id=G-M5J5WYS3VJ";
-          script.async = true;
-
-          script.onload = function () {
-            initAnalytics();
-          };
-
-          script.onerror = function () {
-            console.warn("Analytics blocked or failed to load.");
-          };
-
-          document.head.appendChild(script);
-        }
-
-        // Load it
-        loadAnalytics();
-
-        // Optional: detect if blocked after delay
-        setTimeout(function () {
-          if (!window.gtag) {
-            console.log("Analytics likely blocked");
-          }
-        }, 2000);
-      })();
-    </script>
 
     <script>
       // Safe helper for tracking events
