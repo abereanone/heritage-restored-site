@@ -17,4 +17,4 @@ bsb-data-pipeline
 scripts/go-links.mjs
 
 # Generated monthly by site-stats/scripts/publish-pages.ps1
-public/site-stats.html
+public/stats.html
